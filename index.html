@@ -1,0 +1,1912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>SSDP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ============================================
+   SSDP APP PROTOTYPE - BOARD PRESENTATION
+   ============================================ */
+
+:root {
+  /* SSDP Brand */
+  --navy: #0F1B4C;
+  --navy-mid: #1A2D6D;
+  --navy-light: #2A3F8F;
+  --blue: #3B5FE0;
+  --blue-light: #6B8AFF;
+  --sky: #E8EEFF;
+  --orange: #F26522;
+  --orange-light: #FF8A50;
+  --orange-glow: rgba(242,101,34,0.15);
+  --green: #10B981;
+  --green-light: #D1FAE5;
+  --red: #EF4444;
+  --red-light: #FEE2E2;
+  --yellow: #F59E0B;
+  --purple: #8B5CF6;
+
+  /* Neutrals */
+  --white: #FFFFFF;
+  --gray-50: #F8FAFC;
+  --gray-100: #F1F5F9;
+  --gray-200: #E2E8F0;
+  --gray-300: #CBD5E1;
+  --gray-400: #94A3B8;
+  --gray-500: #64748B;
+  --gray-600: #475569;
+  --gray-700: #334155;
+  --gray-800: #1E293B;
+  --gray-900: #0F172A;
+
+  /* Layout */
+  --safe-top: max(env(safe-area-inset-top), 20px);
+  --safe-bottom: max(env(safe-area-inset-bottom), 0px);
+  --tab-h: 80px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(15,27,76,0.04);
+  --shadow-md: 0 4px 12px rgba(15,27,76,0.06), 0 1px 3px rgba(15,27,76,0.04);
+  --shadow-lg: 0 12px 40px rgba(15,27,76,0.1), 0 4px 12px rgba(15,27,76,0.05);
+  --shadow-xl: 0 20px 60px rgba(15,27,76,0.12);
+  --shadow-glow-orange: 0 4px 20px rgba(242,101,34,0.3);
+  --shadow-glow-blue: 0 4px 20px rgba(59,95,224,0.25);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #0F172A;
+  color: var(--gray-800);
+  overflow: hidden;
+  height: 100dvh;
+  width: 100vw;
+  position: fixed;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---- ROLE SWITCHER (Demo Control) ---- */
+.role-switcher {
+  position: absolute;
+  top: 12px; left: 50%;
+  transform: translateX(-50%);
+  display: flex; align-items: center; gap: 8px;
+  z-index: 9999;
+  background: rgba(30,41,59,0.9);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  padding: 6px 8px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+.role-switcher .rs-label {
+  font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.5);
+  letter-spacing: 0.3px; white-space: nowrap; padding: 0 4px;
+}
+.role-switcher button {
+  font-family: inherit;
+  font-size: 11px; font-weight: 700; padding: 6px 12px;
+  border-radius: 8px; border: none; cursor: pointer;
+  background: transparent; color: rgba(255,255,255,0.45);
+  transition: all 0.2s; white-space: nowrap;
+}
+.role-switcher button.active {
+  background: var(--blue); color: white;
+  box-shadow: 0 2px 8px rgba(59,95,224,0.4);
+}
+.role-switcher button:hover:not(.active) {
+  color: rgba(255,255,255,0.7); background: rgba(255,255,255,0.05);
+}
+
+@media (max-width: 430px) {
+  .role-switcher {
+    top: 4px; padding: 4px 6px; border-radius: 10px;
+  }
+}
+
+/* Phone frame for desktop viewing */
+.phone-frame {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 393px;
+  height: 852px;
+  max-height: 100dvh;
+  max-width: 100vw;
+  border-radius: 44px;
+  overflow: hidden;
+  box-shadow: 0 0 0 12px #1a1a2e, 0 0 0 14px #333, var(--shadow-xl);
+  background: var(--gray-50);
+  margin-top: 18px;
+}
+
+@media (max-width: 430px) {
+  .phone-frame {
+    width: 100vw;
+    height: 100dvh;
+    border-radius: 0;
+    box-shadow: none;
+    margin-top: 28px;
+  }
+}
+
+.app {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  background: var(--gray-50);
+}
+
+/* ---- SCREENS ---- */
+.screen {
+  position: absolute;
+  inset: 0;
+  background: var(--gray-50);
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+  transform: translateX(40px);
+  z-index: 1;
+}
+.screen.active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(0);
+  z-index: 10;
+}
+.screen.beneath {
+  opacity: 0.4;
+  transform: translateX(-60px) scale(0.96);
+}
+.screen::-webkit-scrollbar { display: none; }
+.screen.has-tabs { padding-bottom: calc(var(--tab-h) + var(--safe-bottom) + 8px); }
+
+/* ---- TAB BAR ---- */
+.tab-bar {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: calc(var(--tab-h) + var(--safe-bottom));
+  background: rgba(255,255,255,0.85);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(180%) blur(20px);
+  border-top: 0.5px solid rgba(0,0,0,0.08);
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+  padding-top: 8px;
+  z-index: 100;
+  transition: transform 0.3s;
+}
+.tab-bar.hidden { transform: translateY(100%); }
+
+.tab-btn {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  background: none; border: none; cursor: pointer;
+  padding: 6px 16px;
+  color: var(--gray-400);
+  transition: color 0.2s;
+  position: relative;
+}
+.tab-btn.active { color: var(--blue); }
+.tab-btn .t-icon {
+  font-size: 24px; height: 26px;
+  display: flex; align-items: center; justify-content: center;
+}
+.tab-btn .t-label { font-size: 10px; font-weight: 600; letter-spacing: 0.3px; }
+.tab-btn .t-badge {
+  position: absolute; top: 2px; right: 8px;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--orange); border: 2px solid white;
+}
+.tab-btn .t-lock {
+  position: absolute; top: 0px; right: 6px;
+  font-size: 10px; display: none;
+}
+
+/* ---- SPLASH ---- */
+.splash {
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+  height: 100%;
+  background: var(--navy);
+  background-image:
+    radial-gradient(ellipse 120% 60% at 50% 0%, rgba(59,95,224,0.25) 0%, transparent 70%),
+    radial-gradient(ellipse 80% 50% at 80% 100%, rgba(242,101,34,0.12) 0%, transparent 60%);
+  padding: 0 28px 60px;
+  text-align: center;
+  color: white;
+  overflow: hidden;
+}
+.splash-top {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding-top: 40px;
+}
+.splash-logo-ring {
+  width: 110px; height: 110px;
+  border-radius: 30px;
+  background: linear-gradient(135deg, var(--blue) 0%, var(--blue-light) 100%);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 12px 40px rgba(59,95,224,0.4);
+  margin-bottom: 28px;
+  animation: float 3s ease-in-out infinite;
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.splash-logo-ring span {
+  font-size: 36px; font-weight: 900; color: white;
+  letter-spacing: -1px;
+}
+.splash h1 {
+  font-size: 32px; font-weight: 800; letter-spacing: -0.8px;
+  margin-bottom: 10px;
+  background: linear-gradient(135deg, #fff 30%, rgba(255,255,255,0.7) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.splash .tagline {
+  font-size: 15px; color: rgba(255,255,255,0.6);
+  line-height: 1.5; max-width: 280px;
+  margin-bottom: 0;
+}
+.splash-actions { width: 100%; max-width: 340px; }
+.s-btn {
+  width: 100%; padding: 16px; border-radius: 14px; font-size: 16px;
+  font-weight: 700; cursor: pointer; border: none;
+  transition: transform 0.12s, box-shadow 0.12s;
+  margin-bottom: 10px; letter-spacing: -0.2px;
+  font-family: inherit;
+}
+.s-btn:active { transform: scale(0.975); }
+.s-btn-primary {
+  background: var(--orange);
+  color: white;
+  box-shadow: var(--shadow-glow-orange);
+}
+.s-btn-secondary {
+  background: rgba(255,255,255,0.08);
+  color: white; border: 1.5px solid rgba(255,255,255,0.15);
+}
+.s-btn-ghost {
+  background: none; color: rgba(255,255,255,0.5);
+  font-weight: 500; font-size: 14px; padding: 12px;
+}
+
+/* ---- HEADER (ios style) ---- */
+.hdr {
+  position: sticky; top: 0; z-index: 50;
+  padding: calc(var(--safe-top) + 4px) 20px 14px;
+  background: rgba(248,250,252,0.8);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(180%) blur(20px);
+}
+.hdr-row { display: flex; align-items: center; justify-content: space-between; }
+.hdr-title-lg {
+  font-size: 28px; font-weight: 800; letter-spacing: -0.6px; color: var(--gray-900);
+}
+.hdr-title-sm {
+  font-size: 17px; font-weight: 700; color: var(--gray-900);
+}
+.hdr-back {
+  display: flex; align-items: center; gap: 4px;
+  background: none; border: none; cursor: pointer;
+  color: var(--blue); font-size: 16px; font-weight: 600;
+  padding: 4px 0; font-family: inherit;
+}
+.hdr-icon-btn {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--white); border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--gray-600); font-size: 18px;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+}
+.hdr-icon-btn .dot {
+  position: absolute; top: 6px; right: 6px;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--orange); border: 2px solid var(--gray-50);
+}
+
+/* ---- HOME SCREEN ---- */
+.home-hero {
+  padding: calc(var(--safe-top) + 12px) 20px 20px;
+  background: var(--navy);
+  background-image:
+    radial-gradient(ellipse 140% 70% at 50% 0%, rgba(59,95,224,0.2) 0%, transparent 70%);
+  color: white;
+  border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+  margin-bottom: 20px;
+}
+.home-topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 20px;
+}
+.home-avatar {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--blue), var(--purple));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 800; color: white;
+  border: 2px solid rgba(255,255,255,0.2);
+}
+.home-greeting h2 {
+  font-size: 22px; font-weight: 800; letter-spacing: -0.5px;
+}
+.home-greeting p {
+  font-size: 13px; color: rgba(255,255,255,0.55); font-weight: 500;
+}
+.home-topbar-right { display: flex; gap: 8px; }
+.home-icon-btn {
+  width: 38px; height: 38px; border-radius: 12px;
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.08);
+  display: flex; align-items: center; justify-content: center;
+  color: rgba(255,255,255,0.7); font-size: 18px; cursor: pointer;
+  position: relative;
+}
+.home-icon-btn .dot {
+  position: absolute; top: 6px; right: 6px;
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--orange);
+}
+
+/* Progress Card */
+.progress-card {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--radius-lg);
+  padding: 18px; margin-bottom: 0;
+}
+.pc-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+.pc-label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.45); }
+.pc-badge {
+  background: rgba(16,185,129,0.15); color: var(--green);
+  font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px;
+  display: flex; align-items: center; gap: 4px;
+}
+.pc-stats { display: flex; gap: 0; margin-bottom: 16px; }
+.pc-stat {
+  flex: 1; text-align: center;
+  border-right: 1px solid rgba(255,255,255,0.06);
+}
+.pc-stat:last-child { border-right: none; }
+.pc-val { font-size: 26px; font-weight: 800; letter-spacing: -1px; }
+.pc-val-sm { font-size: 22px; }
+.pc-desc { font-size: 11px; color: rgba(255,255,255,0.4); font-weight: 500; }
+.pc-bar { height: 6px; background: rgba(255,255,255,0.08); border-radius: 4px; overflow: hidden; }
+.pc-bar-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--orange) 0%, var(--orange-light) 100%); }
+.pc-bar-label { font-size: 11px; color: rgba(255,255,255,0.35); margin-top: 6px; text-align: right; font-weight: 500; }
+
+/* Quick Actions */
+.qa-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+  padding: 0 20px; margin-bottom: 24px;
+}
+.qa-item {
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  background: none; border: none; cursor: pointer; padding: 0;
+  font-family: inherit;
+}
+.qa-item:active .qa-icon { transform: scale(0.9); }
+.qa-icon {
+  width: 52px; height: 52px; border-radius: 16px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px; transition: transform 0.15s;
+  box-shadow: var(--shadow-sm);
+}
+.qa-label { font-size: 11px; font-weight: 600; color: var(--gray-500); text-align: center; line-height: 1.3; }
+
+/* Featured CTA */
+.featured-cta {
+  margin: 0 20px 24px; padding: 18px 20px;
+  background: linear-gradient(135deg, var(--orange) 0%, #E8550F 100%);
+  border-radius: var(--radius-lg);
+  display: flex; align-items: center; gap: 16px;
+  color: white; cursor: pointer;
+  box-shadow: var(--shadow-glow-orange);
+  transition: transform 0.15s;
+  position: relative; overflow: hidden;
+}
+.featured-cta::before {
+  content: ''; position: absolute; top: -50%; right: -20%;
+  width: 140px; height: 140px; border-radius: 50%;
+  background: rgba(255,255,255,0.08);
+}
+.featured-cta:active { transform: scale(0.98); }
+.fc-icon { font-size: 36px; z-index: 1; flex-shrink: 0; }
+.fc-text { z-index: 1; }
+.fc-text h3 { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
+.fc-text p { font-size: 12px; opacity: 0.85; font-weight: 500; }
+.fc-arrow { margin-left: auto; z-index: 1; opacity: 0.6; font-size: 20px; }
+
+/* Ambassador CTA (for non-ambassador views) */
+.ambassador-cta {
+  margin: 0 20px 24px; padding: 18px 20px;
+  background: linear-gradient(135deg, var(--blue) 0%, var(--navy-light) 100%);
+  border-radius: var(--radius-lg);
+  display: flex; align-items: center; gap: 16px;
+  color: white; cursor: pointer;
+  box-shadow: var(--shadow-glow-blue);
+  transition: transform 0.15s;
+  position: relative; overflow: hidden;
+  display: none;
+}
+.ambassador-cta::before {
+  content: ''; position: absolute; top: -50%; right: -20%;
+  width: 140px; height: 140px; border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+}
+.ambassador-cta:active { transform: scale(0.98); }
+
+/* Section Headers */
+.sec-hdr {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 0 20px; margin-bottom: 12px;
+}
+.sec-title { font-size: 18px; font-weight: 800; color: var(--gray-900); letter-spacing: -0.3px; }
+.sec-link { font-size: 13px; font-weight: 600; color: var(--blue); background: none; border: none; cursor: pointer; font-family: inherit; }
+
+/* News Cards */
+.news-scroll { display: flex; gap: 12px; padding: 0 20px; overflow-x: auto; margin-bottom: 24px; scroll-snap-type: x mandatory; }
+.news-scroll::-webkit-scrollbar { display: none; }
+.news-card {
+  min-width: 260px; background: white; border-radius: var(--radius-md); padding: 16px;
+  box-shadow: var(--shadow-md); cursor: pointer; scroll-snap-align: start;
+  transition: transform 0.15s; flex-shrink: 0;
+  border: 1px solid rgba(0,0,0,0.03);
+}
+.news-card:active { transform: scale(0.97); }
+.nc-tag {
+  display: inline-block; font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.8px; padding: 3px 8px; border-radius: 6px; margin-bottom: 8px;
+}
+.nc-tag.policy { background: #EDE9FE; color: #7C3AED; }
+.nc-tag.event { background: #DBEAFE; color: #2563EB; }
+.nc-tag.alert { background: var(--red-light); color: var(--red); }
+.nc-tag.win { background: var(--green-light); color: #059669; }
+.news-card h4 { font-size: 14px; font-weight: 700; color: var(--gray-800); line-height: 1.35; margin-bottom: 4px; }
+.news-card p { font-size: 12px; color: var(--gray-400); font-weight: 500; }
+
+/* ---- ACADEMY SCREEN ---- */
+.course-card {
+  background: white; border-radius: var(--radius-lg); padding: 18px;
+  margin: 0 20px 12px; box-shadow: var(--shadow-md);
+  cursor: pointer; transition: transform 0.15s;
+  border: 1px solid rgba(0,0,0,0.03);
+  position: relative; overflow: hidden;
+}
+.course-card:active { transform: scale(0.98); }
+.cc-top { display: flex; gap: 14px; align-items: flex-start; }
+.cc-icon {
+  width: 48px; height: 48px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; flex-shrink: 0;
+}
+.cc-info { flex: 1; }
+.cc-info h4 { font-size: 15px; font-weight: 700; color: var(--gray-800); margin-bottom: 2px; }
+.cc-meta { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.cc-meta span { font-size: 11px; font-weight: 600; color: var(--gray-400); }
+.cc-tag {
+  display: inline-flex; align-items: center; gap: 3px;
+  font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 5px;
+}
+.cc-tag.new { background: #DBEAFE; color: #2563EB; }
+.cc-tag.done { background: var(--green-light); color: #059669; }
+.cc-tag.locked { background: var(--gray-100); color: var(--gray-400); }
+.cc-tag.start { background: #FEF3C7; color: #D97706; }
+.cc-progress { margin-top: 12px; }
+.cc-bar { height: 5px; background: var(--gray-100); border-radius: 3px; overflow: hidden; }
+.cc-bar-fill { height: 100%; border-radius: 3px; }
+.cc-status { font-size: 11px; font-weight: 600; color: var(--gray-400); margin-top: 5px; }
+.cc-status.complete { color: var(--green); }
+.cc-lock-overlay {
+  position: absolute; inset: 0; background: rgba(255,255,255,0.6);
+  -webkit-backdrop-filter: blur(1px); backdrop-filter: blur(1px);
+  display: flex; align-items: center; justify-content: center;
+  border-radius: var(--radius-lg);
+}
+.cc-lock-pill {
+  background: var(--gray-800); color: white;
+  font-size: 12px; font-weight: 700; padding: 8px 16px; border-radius: 20px;
+  display: flex; align-items: center; gap: 6px;
+}
+
+/* Guest overlay for academy cards */
+.cc-guest-overlay {
+  position: absolute; inset: 0; background: rgba(255,255,255,0.7);
+  -webkit-backdrop-filter: blur(1px); backdrop-filter: blur(1px);
+  display: none; align-items: center; justify-content: center;
+  border-radius: var(--radius-lg);
+}
+.cc-guest-pill {
+  background: var(--blue); color: white;
+  font-size: 12px; font-weight: 700; padding: 8px 16px; border-radius: 20px;
+}
+
+/* ---- COURSE DETAIL ---- */
+.cd-hero {
+  padding: calc(var(--safe-top) + 12px) 20px 24px;
+  color: white; position: relative; overflow: hidden;
+}
+.cd-hero::before {
+  content: ''; position: absolute; top: -40%; right: -30%;
+  width: 300px; height: 300px; border-radius: 50%;
+  background: rgba(255,255,255,0.04);
+}
+.cd-back {
+  display: flex; align-items: center; gap: 4px;
+  background: rgba(255,255,255,0.1); border: none; border-radius: 10px;
+  color: rgba(255,255,255,0.9); font-size: 14px; font-weight: 600;
+  padding: 8px 12px; cursor: pointer; margin-bottom: 16px;
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  font-family: inherit;
+}
+.cd-hero h1 { font-size: 26px; font-weight: 800; margin-bottom: 6px; letter-spacing: -0.5px; }
+.cd-hero .cd-sub { font-size: 14px; opacity: 0.7; font-weight: 500; margin-bottom: 16px; }
+.cd-dots { display: flex; gap: 6px; }
+.cd-dot {
+  height: 4px; border-radius: 2px;
+  background: rgba(255,255,255,0.2);
+  transition: all 0.3s;
+  flex: 1;
+}
+.cd-dot.done { background: rgba(255,255,255,0.6); }
+.cd-dot.active { background: white; box-shadow: 0 0 8px rgba(255,255,255,0.4); }
+.cd-mod-label { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.5); margin-top: 8px; }
+
+.cd-body { padding: 0 20px; }
+.cd-section-title {
+  font-size: 22px; font-weight: 800; color: var(--gray-900);
+  letter-spacing: -0.4px; margin: 20px 0 16px;
+}
+
+.cd-block {
+  background: white; border-radius: var(--radius-md); padding: 20px;
+  margin-bottom: 14px; box-shadow: var(--shadow-sm);
+  border: 1px solid rgba(0,0,0,0.03);
+}
+.cd-block h4 {
+  font-size: 16px; font-weight: 700; color: var(--gray-800);
+  margin-bottom: 10px; letter-spacing: -0.2px;
+}
+.cd-block p {
+  font-size: 14px; line-height: 1.7; color: var(--gray-500); margin-bottom: 10px;
+}
+.cd-block p:last-child { margin-bottom: 0; }
+.cd-block strong { color: var(--gray-700); }
+.cd-block ul { padding-left: 0; list-style: none; }
+.cd-block li {
+  font-size: 14px; line-height: 1.7; color: var(--gray-500);
+  padding: 4px 0 4px 22px; position: relative;
+}
+.cd-block li::before {
+  content: ''; position: absolute; left: 4px; top: 12px;
+  width: 8px; height: 8px; border-radius: 50%;
+  border: 2px solid var(--blue); background: transparent;
+}
+
+.cd-media {
+  border-radius: var(--radius-md); overflow: hidden;
+  height: 200px; margin-bottom: 14px;
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+}
+.cd-media-inner {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 8px;
+}
+.cd-media-inner .play-btn {
+  width: 56px; height: 56px; border-radius: 50%;
+  background: rgba(255,255,255,0.95); display: flex; align-items: center; justify-content: center;
+  box-shadow: var(--shadow-lg); font-size: 22px; color: var(--gray-700);
+}
+.cd-media-inner span { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.8); }
+
+/* Quiz */
+.quiz-block {
+  background: var(--sky); border-radius: var(--radius-md); padding: 20px;
+  margin-bottom: 14px; border-left: 4px solid var(--blue);
+}
+.quiz-block .qb-label {
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 1px; color: var(--blue); margin-bottom: 8px;
+}
+.quiz-block .qb-q {
+  font-size: 15px; font-weight: 700; color: var(--gray-800); margin-bottom: 14px; line-height: 1.5;
+}
+.q-opt {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 16px; background: white; border-radius: var(--radius-sm);
+  margin-bottom: 8px; cursor: pointer;
+  border: 2px solid transparent; transition: all 0.2s;
+}
+.q-opt:active, .q-opt.sel { border-color: var(--blue); background: rgba(59,95,224,0.04); }
+.q-radio {
+  width: 22px; height: 22px; border-radius: 50%;
+  border: 2px solid var(--gray-300); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+}
+.q-opt.sel .q-radio { border-color: var(--blue); background: var(--blue); }
+.q-opt.sel .q-radio::after { content: ''; width: 8px; height: 8px; border-radius: 50%; background: white; }
+.q-opt span { font-size: 14px; color: var(--gray-700); font-weight: 500; }
+
+.cd-nav {
+  display: flex; gap: 12px; padding: 16px 20px 32px;
+}
+.cd-btn {
+  flex: 1; padding: 16px; border-radius: var(--radius-md); font-size: 15px;
+  font-weight: 700; cursor: pointer; border: none;
+  transition: transform 0.12s; letter-spacing: -0.2px;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  font-family: inherit;
+}
+.cd-btn:active { transform: scale(0.97); }
+.cd-btn-prev { background: var(--gray-100); color: var(--gray-500); }
+.cd-btn-next { background: var(--blue); color: white; box-shadow: var(--shadow-glow-blue); }
+
+/* ---- MAP SCREEN ---- */
+.map-container { position: relative; }
+.map-search-bar {
+  padding: 0 20px 12px; background: var(--gray-50);
+}
+.map-input-wrap { position: relative; }
+.map-input-wrap i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--gray-400); font-size: 18px; font-style: normal; }
+.map-input {
+  width: 100%; padding: 14px 14px 14px 44px;
+  border-radius: var(--radius-md); border: 1.5px solid var(--gray-200);
+  font-size: 15px; font-weight: 500; background: white;
+  outline: none; font-family: inherit;
+  box-shadow: var(--shadow-sm);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.map-input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(59,95,224,0.1); }
+.map-view {
+  height: 280px; margin: 0 20px; border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, #c3dafe 0%, #e0e7ff 40%, #dbeafe 100%);
+  position: relative; overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+.map-view .pin {
+  position: absolute; width: 32px; height: 32px;
+  background: var(--blue); border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg); display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 2px 8px rgba(59,95,224,0.4);
+}
+.map-view .pin::after {
+  content: ''; width: 10px; height: 10px; border-radius: 50%;
+  background: white; transform: rotate(45deg);
+}
+.map-label {
+  position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
+  background: rgba(255,255,255,0.9); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; color: var(--gray-600);
+  box-shadow: var(--shadow-sm);
+}
+.biz-card {
+  background: white; border-radius: var(--radius-md); padding: 16px;
+  margin: 10px 20px; box-shadow: var(--shadow-sm); border: 1px solid rgba(0,0,0,0.03);
+  display: flex; align-items: center; gap: 14px;
+}
+.biz-marker {
+  width: 40px; height: 40px; border-radius: 12px; background: var(--sky);
+  display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;
+  color: var(--blue);
+}
+.biz-info { flex: 1; }
+.biz-info h4 { font-size: 14px; font-weight: 700; color: var(--gray-800); }
+.biz-info p { font-size: 12px; color: var(--gray-400); margin-top: 1px; }
+.biz-right { text-align: right; }
+.biz-dist { font-size: 13px; font-weight: 700; color: var(--blue); }
+.biz-dir {
+  font-size: 11px; color: var(--blue); background: var(--sky);
+  padding: 4px 10px; border-radius: 6px; border: none; font-weight: 600;
+  cursor: pointer; margin-top: 4px; font-family: inherit;
+}
+
+/* ---- CHAT SCREEN ---- */
+.chat-screen .hdr { border-bottom: 0.5px solid var(--gray-200); }
+.ch-list { padding: 8px 20px; }
+.ch-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px; border-radius: var(--radius-sm);
+  cursor: pointer; transition: background 0.15s;
+}
+.ch-item:active, .ch-item.on { background: var(--sky); }
+.ch-hash {
+  width: 32px; height: 32px; border-radius: 10px; background: var(--gray-100);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 800; color: var(--gray-500);
+}
+.ch-item.on .ch-hash { background: var(--blue); color: white; }
+.ch-name { font-size: 15px; font-weight: 600; color: var(--gray-700); flex: 1; }
+.ch-badge {
+  min-width: 20px; height: 20px; padding: 0 6px; border-radius: 10px;
+  background: var(--orange); color: white; font-size: 11px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+.ch-divider { height: 0.5px; background: var(--gray-200); margin: 4px 20px; }
+.chat-area { padding: 12px 20px 100px; }
+.msg { margin-bottom: 18px; }
+.msg-author { font-size: 13px; font-weight: 700; color: var(--navy); }
+.msg-time { font-weight: 500; color: var(--gray-400); margin-left: 8px; font-size: 11px; }
+.msg-text { font-size: 14px; line-height: 1.6; color: var(--gray-600); margin-top: 3px; }
+.chat-bar {
+  position: absolute; bottom: calc(var(--tab-h) + var(--safe-bottom));
+  left: 0; right: 0; padding: 10px 20px;
+  background: rgba(248,250,252,0.9); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
+  border-top: 0.5px solid var(--gray-200);
+  display: flex; gap: 10px; align-items: center;
+}
+.chat-field {
+  flex: 1; padding: 12px 16px; border-radius: 22px;
+  border: 1.5px solid var(--gray-200); font-size: 14px;
+  background: white; outline: none; font-family: inherit;
+}
+.chat-send {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: var(--blue); color: white; border: none;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  font-size: 18px; box-shadow: var(--shadow-glow-blue);
+}
+
+/* Chat lock overlay */
+.chat-lock-overlay {
+  position: absolute; inset: 0; z-index: 60;
+  background: rgba(248,250,252,0.95);
+  display: none; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center; padding: 40px;
+}
+.chat-lock-overlay .clo-icon { font-size: 48px; margin-bottom: 16px; }
+.chat-lock-overlay h3 { font-size: 20px; font-weight: 800; color: var(--gray-800); margin-bottom: 8px; }
+.chat-lock-overlay p { font-size: 14px; color: var(--gray-500); line-height: 1.6; margin-bottom: 20px; }
+.chat-lock-overlay .clo-btn {
+  padding: 14px 28px; border-radius: var(--radius-md);
+  background: var(--blue); color: white; border: none;
+  font-size: 15px; font-weight: 700; cursor: pointer;
+  box-shadow: var(--shadow-glow-blue); font-family: inherit;
+}
+
+/* ---- LOBBY DAY OVERLAY ---- */
+.lobby {
+  position: absolute; inset: 0; z-index: 200;
+  background: var(--gray-50); overflow-y: auto;
+  transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+  -webkit-overflow-scrolling: touch;
+}
+.lobby.off { transform: translateY(100%); pointer-events: none; }
+.lobby-hero {
+  padding: calc(var(--safe-top) + 12px) 20px 24px;
+  background: linear-gradient(135deg, #047857 0%, #059669 50%, #10B981 100%);
+  color: white; border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+}
+.lobby-close-btn {
+  display: flex; align-items: center; gap: 4px;
+  background: rgba(255,255,255,0.12); border: none; border-radius: 10px;
+  color: white; font-size: 13px; font-weight: 600;
+  padding: 8px 14px; cursor: pointer; margin-bottom: 14px;
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  font-family: inherit;
+}
+.lobby-hero h1 { font-size: 24px; font-weight: 800; margin-bottom: 4px; letter-spacing: -0.5px; }
+.lobby-hero p { font-size: 14px; opacity: 0.8; font-weight: 500; }
+.lobby-body { padding: 20px 20px 40px; }
+.lobby-sec { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400); margin-bottom: 10px; }
+.mtg-card {
+  background: white; border-radius: var(--radius-md); padding: 16px; margin-bottom: 10px;
+  box-shadow: var(--shadow-sm); border-left: 4px solid var(--green);
+  display: flex; gap: 14px; align-items: flex-start; position: relative;
+}
+.mtg-card.done { border-left-color: var(--gray-300); opacity: 0.6; }
+.mtg-check {
+  width: 24px; height: 24px; border-radius: 8px; border: 2px solid var(--gray-300);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; font-size: 14px; color: white; margin-top: 2px;
+}
+.mtg-card.done .mtg-check { background: var(--green); border-color: var(--green); }
+.mtg-time { font-size: 12px; font-weight: 700; color: var(--green); }
+.mtg-card.done .mtg-time { color: var(--gray-400); }
+.mtg-name { font-size: 15px; font-weight: 700; color: var(--gray-800); margin: 2px 0; }
+.mtg-loc { font-size: 12px; color: var(--gray-400); }
+.tp-card {
+  background: white; border-radius: var(--radius-md); padding: 18px;
+  margin-bottom: 16px; box-shadow: var(--shadow-sm);
+}
+.tp-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 12px; color: var(--gray-800); }
+.tp-item {
+  padding: 10px 0; border-bottom: 0.5px solid var(--gray-200);
+  font-size: 14px; color: var(--gray-600); display: flex; align-items: center; gap: 10px;
+}
+.tp-item:last-child { border-bottom: none; }
+.tp-bullet { width: 6px; height: 6px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+.report-card {
+  background: white; border-radius: var(--radius-md); padding: 18px;
+  box-shadow: var(--shadow-sm);
+}
+.report-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 14px; color: var(--gray-800); }
+.r-field { margin-bottom: 14px; }
+.r-field label { display: block; font-size: 12px; font-weight: 600; color: var(--gray-500); margin-bottom: 5px; }
+.r-field input, .r-field textarea {
+  width: 100%; padding: 12px 14px; border: 1.5px solid var(--gray-200); border-radius: var(--radius-sm);
+  font-size: 14px; outline: none; font-family: inherit; transition: border-color 0.2s;
+}
+.r-field input:focus, .r-field textarea:focus { border-color: var(--green); }
+.r-field textarea { height: 80px; resize: none; }
+.r-photo {
+  width: 100%; padding: 14px; border: 2px dashed var(--gray-200); border-radius: var(--radius-sm);
+  background: var(--gray-50); color: var(--gray-400); font-size: 14px; font-weight: 500;
+  display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer;
+  font-family: inherit;
+}
+.r-submit {
+  width: 100%; padding: 16px; border-radius: var(--radius-md);
+  background: var(--green); color: white; border: none;
+  font-size: 15px; font-weight: 700; cursor: pointer;
+  box-shadow: 0 4px 16px rgba(16,185,129,0.3); margin-top: 4px;
+  font-family: inherit;
+}
+
+/* ---- PROFILE ---- */
+.profile-hero {
+  padding: calc(var(--safe-top) + 20px) 20px 28px;
+  background: var(--navy);
+  background-image: radial-gradient(ellipse 120% 80% at 50% 0%, rgba(59,95,224,0.2) 0%, transparent 70%);
+  color: white; text-align: center;
+  border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+  margin-bottom: 8px;
+}
+.p-avatar {
+  width: 76px; height: 76px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--blue), var(--purple));
+  margin: 0 auto 14px; display: flex; align-items: center; justify-content: center;
+  font-size: 28px; font-weight: 800; color: white;
+  border: 3px solid rgba(255,255,255,0.15);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+}
+.p-name { font-size: 22px; font-weight: 800; margin-bottom: 4px; letter-spacing: -0.4px; }
+.p-meta { font-size: 13px; color: rgba(255,255,255,0.5); font-weight: 500; }
+.p-stat-row {
+  display: flex; gap: 0; margin-top: 18px;
+  background: rgba(255,255,255,0.06); border-radius: var(--radius-md); overflow: hidden;
+}
+.p-stat {
+  flex: 1; text-align: center; padding: 12px 4px;
+  border-right: 1px solid rgba(255,255,255,0.05);
+}
+.p-stat:last-child { border-right: none; }
+.p-stat-val { font-size: 18px; font-weight: 800; }
+.p-stat-lbl { font-size: 9px; color: rgba(255,255,255,0.4); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+
+.menu-group { padding: 8px 20px; }
+.menu-group-title {
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 1px; color: var(--gray-400); padding: 10px 0 4px;
+}
+.m-item {
+  display: flex; align-items: center; gap: 14px;
+  padding: 15px 0; border-bottom: 0.5px solid var(--gray-200);
+  cursor: pointer;
+}
+.m-icon {
+  width: 34px; height: 34px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; flex-shrink: 0;
+}
+.m-label { font-size: 15px; font-weight: 600; color: var(--gray-700); flex: 1; }
+.m-arrow { color: var(--gray-300); font-size: 16px; }
+
+/* ---- MODALS ---- */
+.modal-bg {
+  position: absolute; inset: 0; z-index: 300;
+  background: rgba(15,23,42,0.5);
+  -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+  display: flex; align-items: flex-end; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.25s;
+}
+.modal-bg.on { opacity: 1; pointer-events: auto; }
+.modal-sheet {
+  background: white; border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  padding: 8px 24px 40px; width: 100%; max-height: 85%;
+  overflow-y: auto; transform: translateY(100%);
+  transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.modal-bg.on .modal-sheet { transform: translateY(0); }
+.modal-handle {
+  width: 36px; height: 4px; border-radius: 2px; background: var(--gray-300);
+  margin: 8px auto 20px;
+}
+.modal-sheet h3 { font-size: 20px; font-weight: 800; margin-bottom: 12px; color: var(--gray-900); letter-spacing: -0.3px; }
+.modal-sheet p { font-size: 14px; line-height: 1.7; color: var(--gray-500); margin-bottom: 12px; }
+.modal-btn {
+  width: 100%; padding: 16px; border-radius: var(--radius-md); font-size: 15px;
+  font-weight: 700; cursor: pointer; border: none; margin-bottom: 8px; letter-spacing: -0.2px;
+  font-family: inherit;
+}
+.modal-btn-primary { background: var(--blue); color: white; box-shadow: var(--shadow-glow-blue); }
+.modal-btn-orange { background: var(--orange); color: white; box-shadow: var(--shadow-glow-orange); }
+.modal-btn-green { background: var(--green); color: white; box-shadow: 0 4px 16px rgba(16,185,129,0.3); }
+.modal-btn-ghost { background: var(--gray-100); color: var(--gray-500); }
+
+/* Ambassador modal success state */
+.amb-sign-state, .amb-success-state { transition: all 0.3s; }
+.amb-success-state { display: none; text-align: center; }
+.amb-success-state .success-icon {
+  width: 72px; height: 72px; border-radius: 50%;
+  background: var(--green-light); color: var(--green);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 36px; margin: 0 auto 16px;
+}
+.amb-success-state h3 { text-align: center; }
+.amb-success-state p { text-align: center; }
+
+/* ---- ROLE-BASED VISIBILITY ---- */
+/* Guest role */
+.app[data-role="guest"] .role-ambassador { display: none !important; }
+.app[data-role="guest"] .role-registered { display: none !important; }
+.app[data-role="guest"] .role-not-guest { display: none !important; }
+.app[data-role="guest"] .role-guest { display: block !important; }
+.app[data-role="guest"] .role-guest-flex { display: flex !important; }
+.app[data-role="guest"] .cc-guest-overlay { display: flex !important; }
+.app[data-role="guest"] .chat-lock-overlay { display: flex !important; }
+.app[data-role="guest"] .tab-chat-lock { display: block !important; }
+.app[data-role="guest"] .t-badge { display: none !important; }
+
+/* Registered (non-ambassador) role */
+.app[data-role="registered"] .role-ambassador { display: none !important; }
+.app[data-role="registered"] .role-guest { display: none !important; }
+.app[data-role="registered"] .role-registered { display: block !important; }
+.app[data-role="registered"] .role-registered-flex { display: flex !important; }
+.app[data-role="registered"] .chat-lock-overlay { display: flex !important; }
+.app[data-role="registered"] .tab-chat-lock { display: block !important; }
+.app[data-role="registered"] .t-badge { display: none !important; }
+
+/* Ambassador role (default) */
+.app[data-role="ambassador"] .role-guest { display: none !important; }
+.app[data-role="ambassador"] .role-registered { display: none !important; }
+
+/* Default hidden states */
+.role-guest { display: none; }
+.role-registered { display: none; }
+.tab-chat-lock { display: none; }
+</style>
+</head>
+<body>
+
+<!-- ROLE SWITCHER (Demo control) -->
+<div class="role-switcher">
+  <span class="rs-label">Viewing as:</span>
+  <button onclick="setRole('guest')">Guest</button>
+  <button onclick="setRole('registered')">Registered</button>
+  <button class="active" onclick="setRole('ambassador')">Ambassador</button>
+</div>
+
+<div class="phone-frame">
+<div class="app" id="app" data-role="ambassador">
+
+<!-- ===================== SPLASH ===================== -->
+<div class="screen active" id="splash">
+  <div class="splash">
+    <div class="splash-top">
+      <div class="splash-logo-ring"><span>SSDP</span></div>
+      <h1>SSDP</h1>
+      <p class="tagline">Students for Sensible Drug Policy<br>The youth-led movement to end the War on Drugs</p>
+    </div>
+    <div class="splash-actions">
+      <button class="s-btn s-btn-primary" onclick="go('home')">Get Started</button>
+      <button class="s-btn s-btn-secondary" onclick="go('home')">I Already Have an Account</button>
+      <button class="s-btn s-btn-ghost" onclick="go('home')">Continue as Guest</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== HOME ===================== -->
+<div class="screen has-tabs" id="home">
+  <div class="home-hero">
+    <div class="home-topbar">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <!-- Ambassador view -->
+        <div class="home-avatar role-ambassador" style="display:flex;">JD</div>
+        <div class="home-greeting role-ambassador" style="display:block;">
+          <h2>Hey, Jamie</h2>
+          <p>Welcome back, Ambassador</p>
+        </div>
+        <!-- Registered view -->
+        <div class="home-avatar role-registered" style="display:none;">JD</div>
+        <div class="home-greeting role-registered" style="display:none;">
+          <h2>Hey, Jamie</h2>
+          <p>Complete training to become an Ambassador</p>
+        </div>
+        <!-- Guest view -->
+        <div class="home-greeting role-guest" style="display:none;">
+          <h2>Welcome to SSDP</h2>
+          <p>Create an account to start earning points</p>
+        </div>
+      </div>
+      <div class="home-topbar-right">
+        <button class="home-icon-btn" onclick="openModal('notif')">&#x1F514;<div class="dot"></div></button>
+      </div>
+    </div>
+
+    <!-- Ambassador progress card -->
+    <div class="progress-card role-ambassador">
+      <div class="pc-top">
+        <span class="pc-label">Your Progress</span>
+        <span class="pc-badge">&#x2713; Ambassador</span>
+      </div>
+      <div class="pc-stats">
+        <div class="pc-stat"><div class="pc-val">340</div><div class="pc-desc">Points</div></div>
+        <div class="pc-stat"><div class="pc-val">4<span style="font-size:16px;opacity:0.4">/12</span></div><div class="pc-desc">Courses</div></div>
+        <div class="pc-stat"><div class="pc-val">7</div><div class="pc-desc">Actions</div></div>
+        <div class="pc-stat"><div class="pc-val pc-val-sm">890</div><div class="pc-desc">Chapter Pts</div></div>
+      </div>
+      <div class="pc-bar"><div class="pc-bar-fill" style="width:33%"></div></div>
+      <div class="pc-bar-label">Rising Star &middot; 160 pts to Advocate</div>
+    </div>
+
+    <!-- Registered (non-ambassador) progress card -->
+    <div class="progress-card role-registered" style="display:none;">
+      <div class="pc-top">
+        <span class="pc-label">Your Progress</span>
+      </div>
+      <div class="pc-stats">
+        <div class="pc-stat"><div class="pc-val">0</div><div class="pc-desc">Points</div></div>
+        <div class="pc-stat"><div class="pc-val">0<span style="font-size:16px;opacity:0.4">/12</span></div><div class="pc-desc">Courses</div></div>
+        <div class="pc-stat"><div class="pc-val">0</div><div class="pc-desc">Actions</div></div>
+      </div>
+      <div class="pc-bar"><div class="pc-bar-fill" style="width:0%"></div></div>
+      <div class="pc-bar-label">Complete Ambassador training to start earning</div>
+    </div>
+
+    <!-- Guest: no progress card -->
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="sec-hdr"><span class="sec-title">Quick Actions</span></div>
+  <div class="qa-grid">
+    <button class="qa-item" onclick="go('academy')">
+      <div class="qa-icon" style="background:#EDE9FE;">&#x1F4DA;</div>
+      <span class="qa-label">Continue Training</span>
+    </button>
+    <button class="qa-item" onclick="openModal('alert')">
+      <div class="qa-icon" style="background:#FEE2E2;">&#x1F6A8;</div>
+      <span class="qa-label">Action Alert</span>
+    </button>
+    <button class="qa-item" onclick="openModal('report')">
+      <div class="qa-icon" style="background:#D1FAE5;">&#x1F4CB;</div>
+      <span class="qa-label">Report Activity</span>
+    </button>
+    <button class="qa-item" onclick="showLobby()">
+      <div class="qa-icon" style="background:#DBEAFE;">&#x1F3DB;&#xFE0F;</div>
+      <span class="qa-label">Lobby Day</span>
+    </button>
+  </div>
+
+  <!-- Featured CTA (Ambassador view) -->
+  <div class="featured-cta role-ambassador" onclick="go('course-thr')" style="display:flex;">
+    <span class="fc-icon">&#x1F525;</span>
+    <div class="fc-text">
+      <h3>NEW: Tobacco Harm Reduction</h3>
+      <p>Complete training &middot; Earn 50 pts + HR kit</p>
+    </div>
+    <span class="fc-arrow">&#x203A;</span>
+  </div>
+
+  <!-- Ambassador CTA (Registered view) -->
+  <div class="ambassador-cta role-registered" onclick="go('course-ambassador')" style="display:none;">
+    <span class="fc-icon">&#x1F31F;</span>
+    <div class="fc-text">
+      <h3>Become an SSDP Ambassador</h3>
+      <p>Unlock chat, points, grants &amp; your free kit</p>
+    </div>
+    <span class="fc-arrow">&#x203A;</span>
+  </div>
+
+  <!-- Guest CTA -->
+  <div class="ambassador-cta role-guest" onclick="go('splash')" style="display:none;">
+    <span class="fc-icon">&#x1F680;</span>
+    <div class="fc-text">
+      <h3>Create a Free Account</h3>
+      <p>Start training &amp; join the movement</p>
+    </div>
+    <span class="fc-arrow">&#x203A;</span>
+  </div>
+
+  <!-- News -->
+  <div class="sec-hdr"><span class="sec-title">Latest from SSDP</span><button class="sec-link">See All</button></div>
+  <div class="news-scroll">
+    <div class="news-card">
+      <span class="nc-tag event">EVENT</span>
+      <h4>Cannabis Week of Unity 2026</h4>
+      <p>April 18-22 &middot; Washington, D.C.</p>
+    </div>
+    <div class="news-card">
+      <span class="nc-tag alert">URGENT</span>
+      <h4>HALT Fentanyl Research Deadline Missed</h4>
+      <p>AG fails to issue research guidelines</p>
+    </div>
+    <div class="news-card">
+      <span class="nc-tag policy">POLICY</span>
+      <h4>Cannabis Rescheduling Executive Order</h4>
+      <p>What the directive means for reform</p>
+    </div>
+    <div class="news-card">
+      <span class="nc-tag win">WIN</span>
+      <h4>SSDP Congressional Session 2026</h4>
+      <p>March 6-8 &middot; Board elections open</p>
+    </div>
+  </div>
+
+  <div style="height:16px"></div>
+</div>
+
+<!-- ===================== ACADEMY ===================== -->
+<div class="screen has-tabs" id="academy">
+  <div class="hdr">
+    <div class="hdr-title-lg">Sensible Academy</div>
+  </div>
+
+  <div style="height:8px"></div>
+  <div class="sec-hdr"><span class="sec-title" style="font-size:15px;">Just Say Know</span></div>
+
+  <div class="course-card" onclick="go('course-hope')">
+    <div class="cc-top">
+      <div class="cc-icon" style="background:linear-gradient(135deg,#D1FAE5,#A7F3D0);">&#x1F49A;</div>
+      <div class="cc-info">
+        <h4>HOPE &mdash; Overdose Prevention</h4>
+        <div class="cc-meta">
+          <span>~1 hour</span><span>&middot;</span><span>5 modules</span>
+          <span class="cc-tag new">NEW</span>
+        </div>
+      </div>
+    </div>
+    <div class="cc-progress">
+      <div class="cc-bar"><div class="cc-bar-fill" style="width:40%;background:linear-gradient(90deg,var(--green),#34D399);"></div></div>
+      <div class="cc-status">Module 2 of 5 &middot; 40% complete</div>
+    </div>
+    <div class="cc-guest-overlay"><span class="cc-guest-pill">Create Account to Start</span></div>
+  </div>
+
+  <div class="course-card" onclick="go('course-thr')">
+    <div class="cc-top">
+      <div class="cc-icon" style="background:linear-gradient(135deg,#FFEDD5,#FED7AA);">&#x1F6AD;</div>
+      <div class="cc-info">
+        <h4>Tobacco Harm Reduction</h4>
+        <div class="cc-meta">
+          <span>~45 min</span><span>&middot;</span><span>4 modules</span>
+          <span class="cc-tag new">NEW</span>
+        </div>
+      </div>
+    </div>
+    <div class="cc-progress"><div class="cc-status">Not started</div></div>
+    <div class="cc-guest-overlay"><span class="cc-guest-pill">Create Account to Start</span></div>
+  </div>
+
+  <div class="course-card">
+    <div class="cc-top">
+      <div class="cc-icon" style="background:linear-gradient(135deg,#D1FAE5,#BBF7D0);">&#x1F33F;</div>
+      <div class="cc-info">
+        <h4>Just Say Know: Cannabis</h4>
+        <div class="cc-meta">
+          <span>~30 min</span>
+          <span class="cc-tag done">COMPLETE</span>
+        </div>
+      </div>
+    </div>
+    <div class="cc-progress">
+      <div class="cc-bar"><div class="cc-bar-fill" style="width:100%;background:var(--green);"></div></div>
+      <div class="cc-status complete">Completed &#x2713;</div>
+    </div>
+    <div class="cc-guest-overlay"><span class="cc-guest-pill">Create Account to Start</span></div>
+  </div>
+
+  <div class="course-card">
+    <div class="cc-top">
+      <div class="cc-icon" style="background:linear-gradient(135deg,#E0E7FF,#C7D2FE);">&#x1F4A8;</div>
+      <div class="cc-info">
+        <h4>Nicotine &amp; Vaping</h4>
+        <div class="cc-meta"><span>~30 min</span><span>&middot;</span><span>3 modules</span></div>
+      </div>
+    </div>
+    <div class="cc-progress"><div class="cc-status">Not started</div></div>
+    <div class="cc-guest-overlay"><span class="cc-guest-pill">Create Account to Start</span></div>
+  </div>
+
+  <div class="course-card">
+    <div class="cc-top">
+      <div class="cc-icon" style="background:linear-gradient(135deg,#EDE9FE,#DDD6FE);">&#x1F52E;</div>
+      <div class="cc-info">
+        <h4>Psychedelics Education</h4>
+        <div class="cc-meta"><span>~45 min</span><span>&middot;</span><span>4 modules</span></div>
+      </div>
+    </div>
+    <div class="cc-progress"><div class="cc-status">Not started</div></div>
+    <div class="cc-guest-overlay"><span class="cc-guest-pill">Create Account to Start</span></div>
+  </div>
+
+  <div class="course-card">
+    <div class="cc-top">
+      <div class="cc-icon" style="background:linear-gradient(135deg,#FEF3C7,#FDE68A);">&#x1F393;</div>
+      <div class="cc-info">
+        <h4>Oaksterdam University</h4>
+        <div class="cc-meta"><span>~2 hours</span><span>&middot;</span><span>Partner course</span></div>
+      </div>
+    </div>
+    <div class="cc-progress"><div class="cc-status">Not started</div></div>
+    <div class="cc-guest-overlay"><span class="cc-guest-pill">Create Account to Start</span></div>
+  </div>
+
+  <div style="height:12px"></div>
+  <div class="sec-hdr"><span class="sec-title" style="font-size:15px;">SSDP Training</span></div>
+
+  <!-- Ambassador module — Ambassador view (completed) -->
+  <div class="course-card role-ambassador" onclick="go('course-ambassador')" style="display:block;">
+    <div class="cc-top">
+      <div class="cc-icon" style="background:linear-gradient(135deg,#FEF3C7,#FDE68A);">&#x1F31F;</div>
+      <div class="cc-info">
+        <h4>Become an SSDP Ambassador</h4>
+        <div class="cc-meta">
+          <span>~20 min</span>
+          <span class="cc-tag done">SIGNED</span>
+        </div>
+      </div>
+    </div>
+    <div class="cc-progress">
+      <div class="cc-bar"><div class="cc-bar-fill" style="width:100%;background:var(--green);"></div></div>
+      <div class="cc-status complete">Agreement signed &#x2713;</div>
+    </div>
+  </div>
+
+  <!-- Ambassador module — Registered view (not started) -->
+  <div class="course-card role-registered" onclick="go('course-ambassador')" style="display:none;">
+    <div class="cc-top">
+      <div class="cc-icon" style="background:linear-gradient(135deg,#FEF3C7,#FDE68A);">&#x1F31F;</div>
+      <div class="cc-info">
+        <h4>Become an SSDP Ambassador</h4>
+        <div class="cc-meta">
+          <span>~20 min</span>
+          <span class="cc-tag start">START</span>
+        </div>
+      </div>
+    </div>
+    <div class="cc-progress"><div class="cc-status">Complete to unlock Chat, Points &amp; more</div></div>
+  </div>
+
+  <!-- Ambassador module — Guest view (locked) -->
+  <div class="course-card role-guest" style="display:none;pointer-events:none;">
+    <div class="cc-top">
+      <div class="cc-icon" style="background:linear-gradient(135deg,#FEF3C7,#FDE68A);">&#x1F31F;</div>
+      <div class="cc-info">
+        <h4>Become an SSDP Ambassador</h4>
+        <div class="cc-meta"><span>~20 min</span></div>
+      </div>
+    </div>
+    <div class="cc-guest-overlay"><span class="cc-guest-pill">Create Account to Start</span></div>
+  </div>
+
+  <div class="course-card role-not-guest">
+    <div class="cc-top">
+      <div class="cc-icon" style="background:linear-gradient(135deg,#DBEAFE,#BFDBFE);">&#x1F465;</div>
+      <div class="cc-info">
+        <h4>Explore SSDP Committees</h4>
+        <div class="cc-meta"><span>~15 min</span><span>&middot;</span><span>Apply to join</span></div>
+      </div>
+    </div>
+    <div class="cc-progress"><div class="cc-status">Not started</div></div>
+  </div>
+
+  <div class="course-card role-not-guest" style="pointer-events:none;">
+    <div class="cc-top">
+      <div class="cc-icon" style="background:var(--gray-100);">&#x1F3DB;&#xFE0F;</div>
+      <div class="cc-info">
+        <h4>Board Member Onboarding</h4>
+        <div class="cc-meta"><span>~30 min</span><span class="cc-tag locked">LOCKED</span></div>
+      </div>
+    </div>
+    <div class="cc-lock-overlay"><div class="cc-lock-pill">&#x1F512; Board Members Only</div></div>
+  </div>
+
+  <div class="course-card role-not-guest" style="pointer-events:none;">
+    <div class="cc-top">
+      <div class="cc-icon" style="background:var(--gray-100);">&#x1F4BC;</div>
+      <div class="cc-info">
+        <h4>Staff Onboarding</h4>
+        <div class="cc-meta"><span class="cc-tag locked">STAFF ONLY</span></div>
+      </div>
+    </div>
+    <div class="cc-lock-overlay"><div class="cc-lock-pill">&#x1F512; Staff Access Required</div></div>
+  </div>
+
+  <div style="height:20px"></div>
+</div>
+
+<!-- ===================== HOPE COURSE ===================== -->
+<div class="screen" id="course-hope">
+  <div class="cd-hero" style="background:linear-gradient(135deg,#047857 0%,#059669 50%,#10B981 100%);">
+    <button class="cd-back" onclick="go('academy')">&#x2190; Academy</button>
+    <h1>HOPE Training</h1>
+    <p class="cd-sub">Harm Reduction &amp; Overdose Prevention Education</p>
+    <div class="cd-dots">
+      <div class="cd-dot done"></div>
+      <div class="cd-dot active"></div>
+      <div class="cd-dot"></div>
+      <div class="cd-dot"></div>
+      <div class="cd-dot"></div>
+    </div>
+    <div class="cd-mod-label">Module 2 of 5</div>
+  </div>
+
+  <div class="cd-body">
+    <div class="cd-section-title">Recognizing an Opioid Overdose</div>
+
+    <div class="cd-media" style="background:linear-gradient(135deg,#065F46,#047857);">
+      <div class="cd-media-inner">
+        <div class="play-btn">&#x25B6;</div>
+        <span>Watch: Signs of an Opioid Overdose (3:42)</span>
+      </div>
+    </div>
+
+    <div class="cd-block">
+      <h4>What Does an Overdose Look Like?</h4>
+      <p>An opioid overdose occurs when opioids overwhelm the body's ability to function. The central nervous system is suppressed, and breathing slows or stops entirely.</p>
+      <p><strong>Key signs to recognize:</strong></p>
+      <ul>
+        <li>Slow, shallow, or stopped breathing</li>
+        <li>Blue or grayish lips, fingertips, or skin (cyanosis)</li>
+        <li>Gurgling or snoring sounds</li>
+        <li>Unresponsive to shouting or sternum rub</li>
+        <li>Pinpoint (very small) pupils</li>
+        <li>Limp body, complete loss of consciousness</li>
+      </ul>
+    </div>
+
+    <div class="cd-block">
+      <h4>Why Every Second Counts</h4>
+      <p>Brain damage begins within <strong>3&ndash;5 minutes</strong> of oxygen deprivation. Acting quickly with naloxone and rescue breathing prevents permanent injury or death.</p>
+      <p>You don't need medical training to save a life. <strong>Good Samaritan laws</strong> in most states protect people who call 911 during an overdose from drug-related prosecution.</p>
+    </div>
+
+    <div class="quiz-block">
+      <div class="qb-label">Knowledge Check</div>
+      <div class="qb-q">Which of the following is NOT typically a sign of an opioid overdose?</div>
+      <div class="q-opt" onclick="sel(this)"><div class="q-radio"></div><span>Slow or stopped breathing</span></div>
+      <div class="q-opt" onclick="sel(this)"><div class="q-radio"></div><span>Dilated (very large) pupils</span></div>
+      <div class="q-opt" onclick="sel(this)"><div class="q-radio"></div><span>Blue lips or fingertips</span></div>
+      <div class="q-opt" onclick="sel(this)"><div class="q-radio"></div><span>Unresponsive to stimulation</span></div>
+    </div>
+
+    <div class="cd-block">
+      <h4>The Fentanyl Factor</h4>
+      <p>Illicitly manufactured fentanyl is <strong>50&ndash;100x more potent than morphine</strong> and is frequently mixed into other drugs without the user's knowledge.</p>
+      <p><strong>Fentanyl test strips</strong> are an inexpensive, evidence-based harm reduction tool. SSDP advocates for their legalization and widespread distribution as a lifesaving measure.</p>
+    </div>
+  </div>
+
+  <div class="cd-nav">
+    <button class="cd-btn cd-btn-prev">&#x2190; Previous</button>
+    <button class="cd-btn cd-btn-next">Next Module &#x2192;</button>
+  </div>
+</div>
+
+<!-- ===================== THR COURSE ===================== -->
+<div class="screen" id="course-thr">
+  <div class="cd-hero" style="background:linear-gradient(135deg,#C2410C 0%,#EA580C 50%,#F97316 100%);">
+    <button class="cd-back" onclick="go('academy')">&#x2190; Academy</button>
+    <h1>Tobacco Harm Reduction</h1>
+    <p class="cd-sub">Evidence-based approaches to reducing tobacco-related harm</p>
+    <div class="cd-dots">
+      <div class="cd-dot active"></div>
+      <div class="cd-dot"></div>
+      <div class="cd-dot"></div>
+      <div class="cd-dot"></div>
+    </div>
+    <div class="cd-mod-label">Module 1 of 4</div>
+  </div>
+
+  <div class="cd-body">
+    <div class="cd-section-title">Introduction to THR</div>
+
+    <div class="cd-media" style="background:linear-gradient(135deg,#9A3412,#C2410C);">
+      <div class="cd-media-inner">
+        <div class="play-btn">&#x25B6;</div>
+        <span>Watch: What is Tobacco Harm Reduction? (4:15)</span>
+      </div>
+    </div>
+
+    <div class="cd-block">
+      <h4>What is Tobacco Harm Reduction?</h4>
+      <p>Tobacco Harm Reduction (THR) acknowledges that while quitting all tobacco and nicotine is ideal, many people are unable or unwilling to quit. THR reduces <strong>health risks</strong> by encouraging switches to less harmful alternatives.</p>
+      <p>This is consistent with SSDP's broader philosophy: meeting people where they are with evidence-based tools to reduce harm.</p>
+    </div>
+
+    <div class="cd-block">
+      <h4>The Continuum of Risk</h4>
+      <p>Not all nicotine products carry the same risk:</p>
+      <ul>
+        <li><strong>Highest risk:</strong> Combustible cigarettes &mdash; smoke drives tobacco-related disease</li>
+        <li><strong>Moderate risk:</strong> Heated tobacco products, some smokeless tobacco</li>
+        <li><strong>Lower risk:</strong> E-cigarettes, nicotine pouches</li>
+        <li><strong>Lowest risk:</strong> Nicotine replacement therapy (patches, gum, lozenges)</li>
+        <li><strong>No risk:</strong> Complete cessation</li>
+      </ul>
+      <p>The key insight: <strong>it's the smoke, not the nicotine</strong>, that causes the vast majority of tobacco-related deaths.</p>
+    </div>
+
+    <div class="cd-block">
+      <h4>Global Perspectives</h4>
+      <p>The UK's NHS actively recommends e-cigarettes as a cessation tool. Sweden has the lowest smoking rate in Europe thanks to snus. In the U.S., the FDA evaluates "modified risk tobacco products" that may reduce exposure to harmful chemicals.</p>
+    </div>
+
+    <div class="quiz-block" style="border-left-color:var(--orange);background:#FFF7ED;">
+      <div class="qb-label" style="color:var(--orange);">Knowledge Check</div>
+      <div class="qb-q">What is the primary driver of tobacco-related disease?</div>
+      <div class="q-opt" onclick="sel(this)"><div class="q-radio"></div><span>Nicotine itself</span></div>
+      <div class="q-opt" onclick="sel(this)"><div class="q-radio"></div><span>Combustion / smoke inhalation</span></div>
+      <div class="q-opt" onclick="sel(this)"><div class="q-radio"></div><span>The tobacco leaf</span></div>
+      <div class="q-opt" onclick="sel(this)"><div class="q-radio"></div><span>Flavoring additives</span></div>
+    </div>
+
+    <div class="cd-block">
+      <h4>Why This Matters</h4>
+      <p>Tobacco kills <strong>480,000 Americans</strong> and <strong>8 million people worldwide</strong> each year. Harm reduction strategies have the potential to save millions of lives by applying the same evidence-based principles SSDP champions across all drug policy.</p>
+    </div>
+  </div>
+
+  <div class="cd-nav">
+    <button class="cd-btn cd-btn-prev" style="opacity:0.4">&#x2190; Previous</button>
+    <button class="cd-btn cd-btn-next" style="background:var(--orange);box-shadow:var(--shadow-glow-orange);">Next Module &#x2192;</button>
+  </div>
+</div>
+
+<!-- ===================== AMBASSADOR COURSE ===================== -->
+<div class="screen" id="course-ambassador">
+  <div class="cd-hero" style="background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 50%,var(--blue) 100%);">
+    <button class="cd-back" onclick="go('academy')">&#x2190; Academy</button>
+    <h1>Become an Ambassador</h1>
+    <p class="cd-sub">Learn what it means to represent SSDP</p>
+    <div class="cd-dots">
+      <div class="cd-dot active"></div>
+      <div class="cd-dot"></div>
+      <div class="cd-dot"></div>
+    </div>
+    <div class="cd-mod-label">Module 1 of 3</div>
+  </div>
+
+  <div class="cd-body">
+    <div class="cd-section-title">What is an SSDP Ambassador?</div>
+
+    <div class="cd-block">
+      <h4>Your Role in the Movement</h4>
+      <p>An SSDP Ambassador is a <strong>trained advocate</strong> who represents Students for Sensible Drug Policy in their community. As the largest youth-led drug policy reform network in the world, SSDP relies on ambassadors to carry our message of evidence-based policy to campuses, communities, and legislators.</p>
+      <p>Ambassadors are the backbone of SSDP's grassroots power. Whether you're on a college campus, in your local community, or advocating at the federal level, your voice matters.</p>
+    </div>
+
+    <div class="cd-block">
+      <h4>What You'll Unlock</h4>
+      <ul>
+        <li><strong>Ambassador Chat</strong> &mdash; Connect with 200+ ambassadors nationwide</li>
+        <li><strong>Point System</strong> &mdash; Earn points for courses, events, and advocacy actions</li>
+        <li><strong>Free Ambassador Kit</strong> &mdash; SSDP t-shirt + pen shipped to you</li>
+        <li><strong>Grant Eligibility</strong> &mdash; Apply for SSDP chapter and individual grants</li>
+        <li><strong>Lobby Day Access</strong> &mdash; Register for Cannabis Week of Unity and other events</li>
+        <li><strong>Stakeholder Reporting</strong> &mdash; Log meetings with legislators and officials</li>
+      </ul>
+    </div>
+
+    <div class="cd-block">
+      <h4>How the Point System Works</h4>
+      <p>Every action you take earns points that contribute to your rank and unlock rewards:</p>
+      <ul>
+        <li><strong>Complete a course:</strong> 25&ndash;50 points</li>
+        <li><strong>Respond to action alert:</strong> 25 points</li>
+        <li><strong>Report stakeholder meeting:</strong> 15 points</li>
+        <li><strong>Attend lobby day:</strong> 100 points</li>
+        <li><strong>Host a campus event:</strong> 50 points</li>
+      </ul>
+      <p>Your chapter also earns <strong>group points</strong> when members complete activities together. Chapters with the highest points earn recognition and priority for resources.</p>
+    </div>
+
+    <div class="cd-block">
+      <h4>Your Commitment</h4>
+      <p>As an ambassador, you agree to:</p>
+      <ul>
+        <li>Represent SSDP's mission of evidence-based drug policy reform</li>
+        <li>Engage in advocacy, education, and community building</li>
+        <li>Follow SSDP's code of conduct in all interactions</li>
+        <li>Report your activities and advocacy actions through the app</li>
+      </ul>
+      <p>Ready to make a difference? Sign the Ambassador Agreement below to unlock all features and receive your kit.</p>
+    </div>
+  </div>
+
+  <div class="cd-nav">
+    <button class="cd-btn cd-btn-prev" style="opacity:0.4">&#x2190; Previous</button>
+    <button class="cd-btn cd-btn-next" onclick="openModal('ambassador')">Sign Agreement &#x270D;&#xFE0F;</button>
+  </div>
+</div>
+
+<!-- ===================== MAP ===================== -->
+<div class="screen has-tabs" id="map">
+  <div class="hdr">
+    <div class="hdr-title-lg">Roundup Finder</div>
+  </div>
+
+  <div class="map-search-bar">
+    <div class="map-input-wrap">
+      <i>&#x1F50D;</i>
+      <input class="map-input" placeholder="Search city, state, or zip...">
+    </div>
+  </div>
+
+  <div class="map-view">
+    <div class="pin" style="top:25%;left:20%"></div>
+    <div class="pin" style="top:40%;left:52%"></div>
+    <div class="pin" style="top:30%;left:72%"></div>
+    <div class="pin" style="top:55%;left:35%"></div>
+    <div class="pin" style="top:50%;left:65%"></div>
+    <div class="map-label">5 Roundup businesses nearby</div>
+  </div>
+
+  <div style="height:16px"></div>
+  <div class="sec-hdr"><span class="sec-title" style="font-size:15px;">Nearby</span></div>
+
+  <div class="biz-card">
+    <div class="biz-marker">&#x1F4CD;</div>
+    <div class="biz-info"><h4>Green Wellness Collective</h4><p>123 Main St, Anytown, NJ</p></div>
+    <div class="biz-right"><div class="biz-dist">0.4 mi</div><button class="biz-dir">Directions</button></div>
+  </div>
+  <div class="biz-card">
+    <div class="biz-marker">&#x1F4CD;</div>
+    <div class="biz-info"><h4>Harmony Health Co.</h4><p>456 Oak Ave, Springfield, NJ</p></div>
+    <div class="biz-right"><div class="biz-dist">1.2 mi</div><button class="biz-dir">Directions</button></div>
+  </div>
+  <div class="biz-card">
+    <div class="biz-marker">&#x1F4CD;</div>
+    <div class="biz-info"><h4>Garden State Remedies</h4><p>789 Elm St, Maplewood, NJ</p></div>
+    <div class="biz-right"><div class="biz-dist">2.8 mi</div><button class="biz-dir">Directions</button></div>
+  </div>
+  <div class="biz-card">
+    <div class="biz-marker">&#x1F4CD;</div>
+    <div class="biz-info"><h4>The Healing Leaf</h4><p>321 Pine Rd, Montclair, NJ</p></div>
+    <div class="biz-right"><div class="biz-dist">3.5 mi</div><button class="biz-dir">Directions</button></div>
+  </div>
+
+  <div style="height:20px"></div>
+</div>
+
+<!-- ===================== CHAT ===================== -->
+<div class="screen has-tabs chat-screen" id="chat">
+  <!-- Chat lock overlay (shown for guest/registered) -->
+  <div class="chat-lock-overlay" id="chatLock">
+    <div class="clo-icon">&#x1F512;</div>
+    <h3>Ambassador Chat</h3>
+    <p class="role-guest" style="display:none;">Create an account and complete the Ambassador training to join the conversation with 200+ advocates nationwide.</p>
+    <p class="role-registered" style="display:none;">Complete the Ambassador training module to unlock Chat and connect with 200+ advocates nationwide.</p>
+    <button class="clo-btn" onclick="go('academy')">Go to Academy</button>
+  </div>
+
+  <div class="hdr" style="padding-bottom:0;">
+    <div class="hdr-row" style="margin-bottom:10px;">
+      <div class="hdr-title-lg">Chat</div>
+      <span style="font-size:12px;color:var(--gray-400);font-weight:600;">247 ambassadors</span>
+    </div>
+  </div>
+
+  <div class="ch-list">
+    <div class="ch-item on"><div class="ch-hash">#</div><span class="ch-name">general</span><span class="ch-badge">3</span></div>
+    <div class="ch-item"><div class="ch-hash">#</div><span class="ch-name">policy-alerts</span><span class="ch-badge">1</span></div>
+    <div class="ch-item"><div class="ch-hash">#</div><span class="ch-name">my-chapter (Rutgers SSDP)</span></div>
+    <div class="ch-item"><div class="ch-hash">#</div><span class="ch-name">harm-reduction</span></div>
+    <div class="ch-item"><div class="ch-hash">#</div><span class="ch-name">lobby-day-2026</span></div>
+    <div class="ch-item"><div class="ch-hash">#</div><span class="ch-name">just-say-know</span></div>
+  </div>
+  <div class="ch-divider"></div>
+  <div class="chat-area">
+    <div class="msg"><div class="msg-author">Sarah M. <span class="msg-time">2:15 PM</span></div><div class="msg-text">Just completed the THR training! The continuum of risk section was really eye-opening. Sharing it with our whole chapter.</div></div>
+    <div class="msg"><div class="msg-author">James K. <span class="msg-time">2:20 PM</span></div><div class="msg-text">Nice! We're planning a HOPE event at UF next week. Anyone done one before? Looking for tips on getting turnout.</div></div>
+    <div class="msg"><div class="msg-author">Maria L. <span class="msg-time">2:25 PM</span></div><div class="msg-text">@James we did one at UCLA last month! Partnered with student health center &mdash; got about 45 people. Happy to share our materials!</div></div>
+    <div class="msg"><div class="msg-author">Alex T. <span class="msg-time">2:31 PM</span></div><div class="msg-text">Heads up &mdash; Cannabis Week of Unity registration closes March 15. Who's going to DC?</div></div>
+    <div class="msg"><div class="msg-author">James K. <span class="msg-time">2:33 PM</span></div><div class="msg-text">@Maria that would be amazing, DM me? And yes @Alex &mdash; our whole chapter is going!</div></div>
+  </div>
+  <div class="chat-bar">
+    <input class="chat-field" placeholder="Type a message...">
+    <button class="chat-send">&#x27A4;</button>
+  </div>
+</div>
+
+<!-- ===================== MORE / PROFILE ===================== -->
+<div class="screen has-tabs" id="more">
+  <!-- Ambassador profile hero -->
+  <div class="profile-hero role-ambassador">
+    <div class="p-avatar">JD</div>
+    <div class="p-name">Jamie Davis</div>
+    <div class="p-meta">Ambassador &middot; Rutgers SSDP</div>
+    <div class="p-stat-row">
+      <div class="p-stat"><div class="p-stat-val">340</div><div class="p-stat-lbl">Points</div></div>
+      <div class="p-stat"><div class="p-stat-val">4</div><div class="p-stat-lbl">Courses</div></div>
+      <div class="p-stat"><div class="p-stat-val">7</div><div class="p-stat-lbl">Actions</div></div>
+      <div class="p-stat"><div class="p-stat-val">890</div><div class="p-stat-lbl">Chapter</div></div>
+      <div class="p-stat"><div class="p-stat-val">2</div><div class="p-stat-lbl">Certs</div></div>
+    </div>
+  </div>
+
+  <!-- Registered profile hero -->
+  <div class="profile-hero role-registered" style="display:none;">
+    <div class="p-avatar">JD</div>
+    <div class="p-name">Jamie Davis</div>
+    <div class="p-meta">Registered Member</div>
+    <div class="p-stat-row">
+      <div class="p-stat"><div class="p-stat-val">0</div><div class="p-stat-lbl">Points</div></div>
+      <div class="p-stat"><div class="p-stat-val">0</div><div class="p-stat-lbl">Courses</div></div>
+      <div class="p-stat"><div class="p-stat-val">0</div><div class="p-stat-lbl">Actions</div></div>
+    </div>
+  </div>
+
+  <!-- Guest profile hero -->
+  <div class="profile-hero role-guest" style="display:none;">
+    <div class="p-avatar" style="background:var(--gray-500);">?</div>
+    <div class="p-name">Guest</div>
+    <div class="p-meta">Create an account to get started</div>
+  </div>
+
+  <!-- Account section (ambassador + registered only) -->
+  <div class="menu-group role-not-guest">
+    <div class="menu-group-title">Account</div>
+    <div class="m-item"><div class="m-icon" style="background:#EDE9FE;color:#7C3AED;">&#x1F464;</div><span class="m-label">Profile &amp; Settings</span><span class="m-arrow">&#x203A;</span></div>
+    <div class="m-item role-ambassador"><div class="m-icon" style="background:#FEF3C7;color:#D97706;">&#x2B50;</div><span class="m-label">Points &amp; Rewards</span><span class="m-arrow">&#x203A;</span></div>
+    <div class="m-item role-ambassador"><div class="m-icon" style="background:#DBEAFE;color:#2563EB;">&#x1F465;</div><span class="m-label">My Chapter</span><span class="m-arrow">&#x203A;</span></div>
+    <div class="m-item role-ambassador"><div class="m-icon" style="background:#D1FAE5;color:#059669;">&#x1F4DC;</div><span class="m-label">My Certificates</span><span class="m-arrow">&#x203A;</span></div>
+  </div>
+  <div class="menu-group">
+    <div class="menu-group-title">SSDP</div>
+    <div class="m-item"><div class="m-icon" style="background:#FFE4E6;color:#E11D48;">&#x1F6CD;&#xFE0F;</div><span class="m-label">SSDP Store</span><span class="m-arrow">&#x203A;</span></div>
+    <div class="m-item role-not-guest"><div class="m-icon" style="background:#FEE2E2;color:#DC2626;">&#x1F6A8;</div><span class="m-label">Action Alerts</span><span class="m-arrow">&#x203A;</span></div>
+    <div class="m-item role-ambassador"><div class="m-icon" style="background:#D1FAE5;color:#059669;">&#x1F4B0;</div><span class="m-label">Apply for Grants</span><span class="m-arrow">&#x203A;</span></div>
+    <div class="m-item"><div class="m-icon" style="background:#F1F5F9;color:#475569;">&#x1F4F0;</div><span class="m-label">News &amp; Blog</span><span class="m-arrow">&#x203A;</span></div>
+    <div class="m-item role-not-guest"><div class="m-icon" style="background:#DBEAFE;color:#2563EB;">&#x1F4CA;</div><span class="m-label">Campus Gradebook</span><span class="m-arrow">&#x203A;</span></div>
+    <div class="m-item role-ambassador"><div class="m-icon" style="background:#D1FAE5;color:#059669;">&#x1F4CB;</div><span class="m-label">Report Stakeholder Interaction</span><span class="m-arrow">&#x203A;</span></div>
+  </div>
+  <div class="menu-group">
+    <div class="menu-group-title">Support</div>
+    <div class="m-item"><div class="m-icon" style="background:#F1F5F9;color:#64748B;">&#x2139;&#xFE0F;</div><span class="m-label">About SSDP</span><span class="m-arrow">&#x203A;</span></div>
+    <div class="m-item"><div class="m-icon" style="background:#F1F5F9;color:#64748B;">&#x2709;&#xFE0F;</div><span class="m-label">Contact Us</span><span class="m-arrow">&#x203A;</span></div>
+    <div class="m-item"><div class="m-icon" style="background:#F1F5F9;color:#64748B;">&#x1F512;</div><span class="m-label">Privacy Policy</span><span class="m-arrow">&#x203A;</span></div>
+  </div>
+  <div style="height:20px"></div>
+</div>
+
+<!-- ===================== LOBBY DAY ===================== -->
+<div class="lobby off" id="lobby">
+  <div class="lobby-hero">
+    <button class="lobby-close-btn" onclick="hideLobby()">&#x2715; Close Lobby Day</button>
+    <h1>Cannabis Week of Unity 2026</h1>
+    <p>April 18&ndash;22 &middot; Washington, D.C.</p>
+  </div>
+  <div class="lobby-body">
+    <div class="lobby-sec">Your Schedule &mdash; Tuesday, April 19</div>
+
+    <div class="mtg-card done">
+      <div class="mtg-check">&#x2713;</div>
+      <div><div class="mtg-time">9:00 AM</div><div class="mtg-name">Sen. Booker's Office (D-NJ)</div><div class="mtg-loc">Room 717, Hart Building &middot; Report submitted</div></div>
+    </div>
+    <div class="mtg-card">
+      <div class="mtg-check"></div>
+      <div><div class="mtg-time">10:30 AM</div><div class="mtg-name">Rep. Watson Coleman (D-NJ-12)</div><div class="mtg-loc">Room 2245, Rayburn Building</div></div>
+    </div>
+    <div class="mtg-card">
+      <div class="mtg-check"></div>
+      <div><div class="mtg-time">1:00 PM</div><div class="mtg-name">Sen. Fetterman's Office (D-PA)</div><div class="mtg-loc">Room B40A, Dirksen Building</div></div>
+    </div>
+    <div class="mtg-card">
+      <div class="mtg-check"></div>
+      <div><div class="mtg-time">2:30 PM</div><div class="mtg-name">Rep. Blumenauer (D-OR-3)</div><div class="mtg-loc">Room 1111, Longworth Building</div></div>
+    </div>
+
+    <div style="height:16px"></div>
+    <div class="lobby-sec">Talking Points</div>
+    <div class="tp-card">
+      <div class="tp-item"><div class="tp-bullet"></div>Cannabis descheduling &amp; executive order implications</div>
+      <div class="tp-item"><div class="tp-bullet"></div>Retroactive justice &amp; record expungement</div>
+      <div class="tp-item"><div class="tp-bullet"></div>HALT Fentanyl Act research guidelines deadline</div>
+      <div class="tp-item"><div class="tp-bullet"></div>Protecting state-level cannabis programs</div>
+      <div class="tp-item"><div class="tp-bullet"></div>Youth perspectives on drug policy reform</div>
+    </div>
+
+    <div class="lobby-sec">Report a Meeting</div>
+    <div class="report-card">
+      <div class="r-field"><label>Meeting with</label><input placeholder="e.g., Sen. Booker's legislative aide"></div>
+      <div class="r-field"><label>Photo</label><button class="r-photo">&#x1F4F7; Take or Upload Photo</button></div>
+      <div class="r-field"><label>Summary</label><textarea placeholder="Key takeaways from the meeting..."></textarea></div>
+      <div class="r-field"><label>Follow-ups needed</label><input placeholder="e.g., Send fact sheet on expungement"></div>
+      <button class="r-submit">Submit Report</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== MODALS ===================== -->
+<div class="modal-bg" id="m-notif" onclick="if(event.target===this)closeModal('notif')">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <h3>Notifications</h3>
+    <div style="padding:14px 0;border-bottom:0.5px solid var(--gray-200);">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;"><span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--red);">URGENT</span></div>
+      <p style="margin:0;font-size:14px;font-weight:600;color:var(--gray-800);">NJ Bill A4567 &mdash; Contact your rep today</p>
+      <p style="margin:4px 0 0;font-size:13px;color:var(--gray-400);">THC potency limits proposal needs opposition</p>
+    </div>
+    <div style="padding:14px 0;border-bottom:0.5px solid var(--gray-200);">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;"><span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--blue);">NEW COURSE</span></div>
+      <p style="margin:0;font-size:14px;font-weight:600;color:var(--gray-800);">Tobacco Harm Reduction training is live</p>
+      <p style="margin:4px 0 0;font-size:13px;color:var(--gray-400);">Earn 50 points + a harm reduction kit</p>
+    </div>
+    <div style="padding:14px 0;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;"><span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--green);">EVENT</span></div>
+      <p style="margin:0;font-size:14px;font-weight:600;color:var(--gray-800);">Cannabis Week of Unity registration open</p>
+      <p style="margin:4px 0 0;font-size:13px;color:var(--gray-400);">April 18-22 in Washington, D.C.</p>
+    </div>
+    <button class="modal-btn modal-btn-ghost" onclick="closeModal('notif')">Dismiss</button>
+  </div>
+</div>
+
+<div class="modal-bg" id="m-ambassador" onclick="if(event.target===this)closeModal('ambassador')">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <!-- Sign state -->
+    <div class="amb-sign-state" id="ambSign">
+      <h3>Ambassador Agreement</h3>
+      <p>You've completed the SSDP Ambassador training. By signing, you commit to:</p>
+      <div style="padding:12px;background:var(--gray-50);border-radius:var(--radius-sm);margin-bottom:16px;">
+        <p style="font-size:13px;line-height:1.7;color:var(--gray-600);margin:0;">
+          &#x2022; Representing SSDP's mission of evidence-based drug policy<br>
+          &#x2022; Engaging in advocacy, education &amp; community building<br>
+          &#x2022; Following SSDP's code of conduct<br>
+          &#x2022; Reporting activities through the app
+        </p>
+      </div>
+      <p><strong>You'll receive:</strong> Ambassador Kit (SSDP t-shirt + pen), Chat access, points earning, and grant eligibility.</p>
+      <button class="modal-btn modal-btn-primary" onclick="signAmbassador()">&#x270D;&#xFE0F; Sign Ambassador Agreement</button>
+      <button class="modal-btn modal-btn-ghost" onclick="closeModal('ambassador')">Review Later</button>
+    </div>
+    <!-- Success state -->
+    <div class="amb-success-state" id="ambSuccess">
+      <div class="success-icon">&#x2713;</div>
+      <h3>Welcome, Ambassador!</h3>
+      <p>You're officially part of the SSDP Ambassador network. Your free kit is ready to order.</p>
+      <button class="modal-btn modal-btn-green" onclick="closeModal('ambassador')">&#x1F4E6; Order Your Ambassador Kit (Free)</button>
+      <button class="modal-btn modal-btn-primary" onclick="closeModal('ambassador');go('chat');">&#x1F4AC; Go to Ambassador Chat</button>
+      <button class="modal-btn modal-btn-ghost" onclick="closeModal('ambassador')">Done</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="m-alert" onclick="if(event.target===this)closeModal('alert')">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <h3>&#x1F6A8; Action Alert</h3>
+    <div style="background:var(--red-light);padding:10px 14px;border-radius:var(--radius-sm);margin-bottom:12px;">
+      <p style="font-size:12px;font-weight:700;color:var(--red);margin:0;">URGENT &mdash; YOUR DISTRICT</p>
+    </div>
+    <p>NJ Assembly Bill A4567 proposes strict THC potency limits that would undermine harm reduction. Your representative sits on the Health Committee.</p>
+    <p><strong>What you can do:</strong></p>
+    <p style="font-size:13px;">1. Call Rep. Watson Coleman at (202) 555-0134<br>2. Use the talking points provided<br>3. Report your call back here for 25 points</p>
+    <button class="modal-btn modal-btn-orange" onclick="closeModal('alert')">&#x1F4DE; Call Now (+25 pts)</button>
+    <button class="modal-btn modal-btn-ghost" onclick="closeModal('alert')">Remind Me Later</button>
+  </div>
+</div>
+
+<div class="modal-bg" id="m-report" onclick="if(event.target===this)closeModal('report')">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <h3>Report Activity</h3>
+    <p>Log a stakeholder interaction to earn points and track SSDP's advocacy impact.</p>
+    <div class="r-field">
+      <label>Type</label>
+      <select style="width:100%;padding:12px;border-radius:var(--radius-sm);border:1.5px solid var(--gray-200);font-size:14px;font-family:inherit;">
+        <option>Legislator meeting</option><option>School official</option><option>HHS / Health officer</option><option>Community event</option><option>Expungement fair</option><option>Other</option>
+      </select>
+    </div>
+    <div class="r-field"><label>Who did you meet?</label><input placeholder="Name and title"></div>
+    <div class="r-field"><label>Summary</label><textarea placeholder="Brief description..."></textarea></div>
+    <button class="modal-btn modal-btn-primary" onclick="closeModal('report')">Submit (+15 pts)</button>
+    <button class="modal-btn modal-btn-ghost" onclick="closeModal('report')">Cancel</button>
+  </div>
+</div>
+
+<!-- ===================== TAB BAR ===================== -->
+<nav class="tab-bar hidden" id="tabs">
+  <button class="tab-btn active" onclick="go('home')" data-t="home">
+    <div class="t-icon">&#x1F3E0;</div><div class="t-label">Home</div>
+  </button>
+  <button class="tab-btn" onclick="go('academy')" data-t="academy">
+    <div class="t-icon">&#x1F4DA;</div><div class="t-label">Academy</div>
+  </button>
+  <button class="tab-btn" onclick="go('map')" data-t="map">
+    <div class="t-icon">&#x1F5FA;&#xFE0F;</div><div class="t-label">Map</div>
+  </button>
+  <button class="tab-btn" onclick="go('chat')" data-t="chat">
+    <div class="t-icon">&#x1F4AC;</div><div class="t-label">Chat</div>
+    <div class="t-badge"></div>
+    <div class="t-lock tab-chat-lock">&#x1F512;</div>
+  </button>
+  <button class="tab-btn" onclick="go('more')" data-t="more">
+    <div class="t-icon">&#x2630;</div><div class="t-label">More</div>
+  </button>
+</nav>
+
+</div><!-- /app -->
+</div><!-- /phone-frame -->
+
+<script>
+let cur = 'splash';
+const tabMap = { 'course-hope':'academy', 'course-thr':'academy', 'course-ambassador':'academy' };
+
+function go(id) {
+  if (id === cur) return;
+  const next = document.getElementById(id);
+  if (!next) return;
+
+  document.querySelectorAll('.screen').forEach(s => {
+    s.classList.remove('active','beneath');
+    s.scrollTop = 0;
+  });
+
+  next.classList.add('active');
+
+  const tabs = document.getElementById('tabs');
+  tabs.classList.toggle('hidden', id === 'splash');
+
+  const tabId = tabMap[id] || id;
+  document.querySelectorAll('.tab-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.t === tabId);
+  });
+
+  cur = id;
+}
+
+function sel(el) {
+  const p = el.closest('.quiz-block');
+  p.querySelectorAll('.q-opt').forEach(o => o.classList.remove('sel'));
+  el.classList.add('sel');
+}
+
+function showLobby() { document.getElementById('lobby').classList.remove('off'); }
+function hideLobby() { document.getElementById('lobby').classList.add('off'); }
+
+function openModal(id) {
+  // Reset ambassador modal to sign state when opening
+  if (id === 'ambassador') {
+    document.getElementById('ambSign').style.display = 'block';
+    document.getElementById('ambSuccess').style.display = 'none';
+  }
+  document.getElementById('m-'+id).classList.add('on');
+}
+function closeModal(id) { document.getElementById('m-'+id).classList.remove('on'); }
+
+function signAmbassador() {
+  document.getElementById('ambSign').style.display = 'none';
+  document.getElementById('ambSuccess').style.display = 'block';
+}
+
+function setRole(role) {
+  document.getElementById('app').setAttribute('data-role', role);
+  // Update role switcher buttons
+  document.querySelectorAll('.role-switcher button').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+document.getElementById('tabs').classList.add('hidden');
+</script>
+</body>
+</html>

@@ -14,16 +14,26 @@
    ============================================ */
 
 :root {
-  /* SSDP Brand */
-  --navy: #0F1B4C;
-  --navy-mid: #1A2D6D;
-  --navy-light: #2A3F8F;
-  --blue: #3B5FE0;
-  --blue-light: #6B8AFF;
-  --sky: #E8EEFF;
-  --orange: #F26522;
-  --orange-light: #FF8A50;
-  --orange-glow: rgba(242,101,34,0.15);
+  /* SSDP Brand Colors (from official logo) */
+  --teal: #1B7085;
+  --teal-dark: #145A6B;
+  --teal-mid: #1E8098;
+  --teal-light: #2A94B0;
+  --navy: #145A6B;
+  --navy-mid: #1B7085;
+  --navy-light: #1E8098;
+  --blue: #1B7085;
+  --blue-light: #2A94B0;
+  --sky: #E4F2F6;
+  --gold: #F0A830;
+  --gold-light: #F5BC50;
+  --gold-glow: rgba(240,168,48,0.2);
+  --lime: #C4D600;
+  --lime-light: #D4E340;
+  --lime-glow: rgba(196,214,0,0.25);
+  --orange: #F0A830;
+  --orange-light: #F5BC50;
+  --orange-glow: rgba(240,168,48,0.15);
   --green: #10B981;
   --green-light: #D1FAE5;
   --red: #EF4444;
@@ -54,19 +64,21 @@
   --radius-xl: 28px;
 
   /* Shadows */
-  --shadow-sm: 0 1px 2px rgba(15,27,76,0.04);
-  --shadow-md: 0 4px 12px rgba(15,27,76,0.06), 0 1px 3px rgba(15,27,76,0.04);
-  --shadow-lg: 0 12px 40px rgba(15,27,76,0.1), 0 4px 12px rgba(15,27,76,0.05);
-  --shadow-xl: 0 20px 60px rgba(15,27,76,0.12);
-  --shadow-glow-orange: 0 4px 20px rgba(242,101,34,0.3);
-  --shadow-glow-blue: 0 4px 20px rgba(59,95,224,0.25);
+  --shadow-sm: 0 1px 2px rgba(27,112,133,0.04);
+  --shadow-md: 0 4px 12px rgba(27,112,133,0.06), 0 1px 3px rgba(27,112,133,0.04);
+  --shadow-lg: 0 12px 40px rgba(27,112,133,0.1), 0 4px 12px rgba(27,112,133,0.05);
+  --shadow-xl: 0 20px 60px rgba(27,112,133,0.12);
+  --shadow-glow-gold: 0 4px 20px rgba(240,168,48,0.3);
+  --shadow-glow-lime: 0 4px 20px rgba(196,214,0,0.3);
+  --shadow-glow-orange: 0 4px 20px rgba(240,168,48,0.3);
+  --shadow-glow-blue: 0 4px 20px rgba(27,112,133,0.25);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  background: #0F172A;
+  background: #0E3D4A;
   color: var(--gray-800);
   overflow: hidden;
   height: 100dvh;
@@ -102,7 +114,7 @@ body {
 }
 .role-switcher button.active {
   background: var(--blue); color: white;
-  box-shadow: 0 2px 8px rgba(59,95,224,0.4);
+  box-shadow: 0 2px 8px rgba(27,112,133,0.4);
 }
 .role-switcher button:hover:not(.active) {
   color: rgba(255,255,255,0.7); background: rgba(255,255,255,0.05);
@@ -125,7 +137,7 @@ body {
   max-width: 100vw;
   border-radius: 44px;
   overflow: hidden;
-  box-shadow: 0 0 0 12px #1a1a2e, 0 0 0 14px #333, var(--shadow-xl);
+  box-shadow: 0 0 0 12px #0E3D4A, 0 0 0 14px #1B7085, var(--shadow-xl);
   background: var(--gray-50);
   margin-top: 18px;
 }
@@ -201,7 +213,7 @@ body {
   transition: color 0.2s;
   position: relative;
 }
-.tab-btn.active { color: var(--blue); }
+.tab-btn.active { color: var(--teal); }
 .tab-btn .t-icon {
   font-size: 24px; height: 26px;
   display: flex; align-items: center; justify-content: center;
@@ -210,7 +222,7 @@ body {
 .tab-btn .t-badge {
   position: absolute; top: 2px; right: 8px;
   width: 8px; height: 8px; border-radius: 50%;
-  background: var(--orange); border: 2px solid white;
+  background: var(--gold); border: 2px solid white;
 }
 .tab-btn .t-lock {
   position: absolute; top: 0px; right: 6px;
@@ -221,10 +233,10 @@ body {
 .splash {
   display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
   height: 100%;
-  background: var(--navy);
+  background: var(--teal-dark);
   background-image:
-    radial-gradient(ellipse 120% 60% at 50% 0%, rgba(59,95,224,0.25) 0%, transparent 70%),
-    radial-gradient(ellipse 80% 50% at 80% 100%, rgba(242,101,34,0.12) 0%, transparent 60%);
+    radial-gradient(ellipse 120% 60% at 50% 0%, rgba(27,112,133,0.35) 0%, transparent 70%),
+    radial-gradient(ellipse 80% 50% at 80% 100%, rgba(240,168,48,0.12) 0%, transparent 60%);
   padding: 0 28px 60px;
   text-align: center;
   color: white;
@@ -238,9 +250,9 @@ body {
 .splash-logo-ring {
   width: 110px; height: 110px;
   border-radius: 30px;
-  background: linear-gradient(135deg, var(--blue) 0%, var(--blue-light) 100%);
+  background: linear-gradient(135deg, var(--teal) 0%, var(--teal-mid) 100%);
   display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 12px 40px rgba(59,95,224,0.4);
+  box-shadow: 0 12px 40px rgba(27,112,133,0.4);
   margin-bottom: 28px;
   animation: float 3s ease-in-out infinite;
 }
@@ -273,9 +285,10 @@ body {
 }
 .s-btn:active { transform: scale(0.975); }
 .s-btn-primary {
-  background: var(--orange);
-  color: white;
-  box-shadow: var(--shadow-glow-orange);
+  background: var(--lime);
+  color: var(--teal);
+  font-weight: 800;
+  box-shadow: var(--shadow-glow-lime);
 }
 .s-btn-secondary {
   background: rgba(255,255,255,0.08);
@@ -318,15 +331,15 @@ body {
 .hdr-icon-btn .dot {
   position: absolute; top: 6px; right: 6px;
   width: 8px; height: 8px; border-radius: 50%;
-  background: var(--orange); border: 2px solid var(--gray-50);
+  background: var(--gold); border: 2px solid var(--gray-50);
 }
 
 /* ---- HOME SCREEN ---- */
 .home-hero {
   padding: calc(var(--safe-top) + 12px) 20px 20px;
-  background: var(--navy);
+  background: var(--teal-dark);
   background-image:
-    radial-gradient(ellipse 140% 70% at 50% 0%, rgba(59,95,224,0.2) 0%, transparent 70%);
+    radial-gradient(ellipse 140% 70% at 50% 0%, rgba(27,112,133,0.35) 0%, transparent 70%);
   color: white;
   border-radius: 0 0 var(--radius-xl) var(--radius-xl);
   margin-bottom: 20px;
@@ -359,7 +372,7 @@ body {
 .home-icon-btn .dot {
   position: absolute; top: 6px; right: 6px;
   width: 7px; height: 7px; border-radius: 50%;
-  background: var(--orange);
+  background: var(--gold);
 }
 
 /* Progress Card */
@@ -386,7 +399,7 @@ body {
 .pc-val-sm { font-size: 22px; }
 .pc-desc { font-size: 11px; color: rgba(255,255,255,0.4); font-weight: 500; }
 .pc-bar { height: 6px; background: rgba(255,255,255,0.08); border-radius: 4px; overflow: hidden; }
-.pc-bar-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--orange) 0%, var(--orange-light) 100%); }
+.pc-bar-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--gold) 0%, var(--gold-light) 100%); }
 .pc-bar-label { font-size: 11px; color: rgba(255,255,255,0.35); margin-top: 6px; text-align: right; font-weight: 500; }
 
 /* Quick Actions */
@@ -411,7 +424,7 @@ body {
 /* Featured CTA */
 .featured-cta {
   margin: 0 20px 24px; padding: 18px 20px;
-  background: linear-gradient(135deg, var(--orange) 0%, #E8550F 100%);
+  background: linear-gradient(135deg, var(--gold) 0%, #CC8520 100%);
   border-radius: var(--radius-lg);
   display: flex; align-items: center; gap: 16px;
   color: white; cursor: pointer;
@@ -434,7 +447,7 @@ body {
 /* Ambassador CTA (for non-ambassador views) */
 .ambassador-cta {
   margin: 0 20px 24px; padding: 18px 20px;
-  background: linear-gradient(135deg, var(--blue) 0%, var(--navy-light) 100%);
+  background: linear-gradient(135deg, var(--teal-mid) 0%, var(--teal) 100%);
   border-radius: var(--radius-lg);
   display: flex; align-items: center; gap: 16px;
   color: white; cursor: pointer;
@@ -632,7 +645,7 @@ body {
   margin-bottom: 8px; cursor: pointer;
   border: 2px solid transparent; transition: all 0.2s;
 }
-.q-opt:active, .q-opt.sel { border-color: var(--blue); background: rgba(59,95,224,0.04); }
+.q-opt:active, .q-opt.sel { border-color: var(--blue); background: rgba(27,112,133,0.04); }
 .q-radio {
   width: 22px; height: 22px; border-radius: 50%;
   border: 2px solid var(--gray-300); flex-shrink: 0;
@@ -657,7 +670,43 @@ body {
 .cd-btn-prev { background: var(--gray-100); color: var(--gray-500); }
 .cd-btn-next { background: var(--blue); color: white; box-shadow: var(--shadow-glow-blue); }
 
-/* ---- MAP SCREEN ---- */
+/* ---- SHOP SENSIBLY SCREEN ---- */
+.shop-banner {
+  margin: 0 20px 16px; padding: 16px 18px;
+  background: linear-gradient(135deg, var(--teal-dark) 0%, var(--teal) 100%);
+  border-radius: var(--radius-lg);
+  color: white; display: flex; align-items: center; gap: 14px;
+}
+.shop-banner-icon { font-size: 28px; flex-shrink: 0; }
+.shop-banner h4 { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+.shop-banner p { font-size: 12px; opacity: 0.6; font-weight: 500; }
+
+.product-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
+  padding: 0 20px; margin-bottom: 24px;
+}
+.product-card {
+  background: white; border-radius: var(--radius-md); overflow: hidden;
+  box-shadow: var(--shadow-sm); border: 1px solid rgba(0,0,0,0.03);
+  cursor: pointer; transition: transform 0.15s;
+}
+.product-card:active { transform: scale(0.97); }
+.product-img {
+  height: 110px; display: flex; align-items: center; justify-content: center;
+  font-size: 40px;
+}
+.product-info { padding: 10px 12px 12px; }
+.product-info h4 { font-size: 13px; font-weight: 700; color: var(--gray-800); line-height: 1.3; margin-bottom: 4px; }
+.product-info .product-meta { display: flex; align-items: center; justify-content: space-between; }
+.product-price { font-size: 14px; font-weight: 800; color: var(--teal); }
+.product-tag {
+  font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+  padding: 2px 6px; border-radius: 4px;
+}
+.product-tag.merch { background: var(--sky); color: var(--blue); }
+.product-tag.affiliate { background: #F0FDF4; color: #15803D; }
+
+/* ---- MAP / FINDER SECTION ---- */
 .map-container { position: relative; }
 .map-search-bar {
   padding: 0 20px 12px; background: var(--gray-50);
@@ -672,7 +721,7 @@ body {
   box-shadow: var(--shadow-sm);
   transition: border-color 0.2s, box-shadow 0.2s;
 }
-.map-input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(59,95,224,0.1); }
+.map-input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(27,112,133,0.1); }
 .map-view {
   height: 280px; margin: 0 20px; border-radius: var(--radius-lg);
   background: linear-gradient(135deg, #c3dafe 0%, #e0e7ff 40%, #dbeafe 100%);
@@ -683,7 +732,7 @@ body {
   position: absolute; width: 32px; height: 32px;
   background: var(--blue); border-radius: 50% 50% 50% 0;
   transform: rotate(-45deg); display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 2px 8px rgba(59,95,224,0.4);
+  box-shadow: 0 2px 8px rgba(27,112,133,0.4);
 }
 .map-view .pin::after {
   content: ''; width: 10px; height: 10px; border-radius: 50%;
@@ -734,8 +783,15 @@ body {
 .ch-name { font-size: 15px; font-weight: 600; color: var(--gray-700); flex: 1; }
 .ch-badge {
   min-width: 20px; height: 20px; padding: 0 6px; border-radius: 10px;
-  background: var(--orange); color: white; font-size: 11px; font-weight: 700;
+  background: var(--gold); color: white; font-size: 11px; font-weight: 700;
   display: flex; align-items: center; justify-content: center;
+}
+.ch-item.locked { opacity: 0.45; pointer-events: none; }
+.ch-item.locked .ch-hash { background: var(--gray-200); color: var(--gray-400); font-size: 12px; }
+.ch-lock-hint { font-size: 11px; color: var(--gray-400); font-weight: 500; }
+.ch-section-label {
+  font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+  color: var(--gray-400); padding: 12px 20px 4px; margin-top: 4px;
 }
 .ch-divider { height: 0.5px; background: var(--gray-200); margin: 4px 20px; }
 .chat-area { padding: 12px 20px 100px; }
@@ -775,7 +831,7 @@ body {
 .chat-lock-overlay p { font-size: 14px; color: var(--gray-500); line-height: 1.6; margin-bottom: 20px; }
 .chat-lock-overlay .clo-btn {
   padding: 14px 28px; border-radius: var(--radius-md);
-  background: var(--blue); color: white; border: none;
+  background: var(--teal); color: white; border: none;
   font-size: 15px; font-weight: 700; cursor: pointer;
   box-shadow: var(--shadow-glow-blue); font-family: inherit;
 }
@@ -862,8 +918,8 @@ body {
 /* ---- PROFILE ---- */
 .profile-hero {
   padding: calc(var(--safe-top) + 20px) 20px 28px;
-  background: var(--navy);
-  background-image: radial-gradient(ellipse 120% 80% at 50% 0%, rgba(59,95,224,0.2) 0%, transparent 70%);
+  background: var(--teal-dark);
+  background-image: radial-gradient(ellipse 120% 80% at 50% 0%, rgba(27,112,133,0.35) 0%, transparent 70%);
   color: white; text-align: center;
   border-radius: 0 0 var(--radius-xl) var(--radius-xl);
   margin-bottom: 8px;
@@ -936,10 +992,31 @@ body {
   font-weight: 700; cursor: pointer; border: none; margin-bottom: 8px; letter-spacing: -0.2px;
   font-family: inherit;
 }
-.modal-btn-primary { background: var(--blue); color: white; box-shadow: var(--shadow-glow-blue); }
-.modal-btn-orange { background: var(--orange); color: white; box-shadow: var(--shadow-glow-orange); }
+.modal-btn-primary { background: var(--teal); color: white; box-shadow: var(--shadow-glow-blue); }
+.modal-btn-orange { background: var(--gold); color: white; box-shadow: var(--shadow-glow-gold); }
 .modal-btn-green { background: var(--green); color: white; box-shadow: 0 4px 16px rgba(16,185,129,0.3); }
 .modal-btn-ghost { background: var(--gray-100); color: var(--gray-500); }
+
+/* Ambassador Directory */
+.dir-grid { padding: 0 0 8px; }
+.dir-card {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 0; border-bottom: 0.5px solid var(--gray-200);
+}
+.dir-card:last-child { border-bottom: none; }
+.dir-avatar {
+  width: 44px; height: 44px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; font-weight: 800; color: white; flex-shrink: 0;
+}
+.dir-info { flex: 1; }
+.dir-info h4 { font-size: 14px; font-weight: 700; color: var(--gray-800); }
+.dir-info p { font-size: 12px; color: var(--gray-400); margin-top: 1px; }
+.dir-pts {
+  font-size: 13px; font-weight: 700; color: var(--teal);
+  background: var(--sky); padding: 4px 10px; border-radius: 12px;
+  white-space: nowrap;
+}
 
 /* Ambassador modal success state */
 .amb-sign-state, .amb-success-state { transition: all 0.3s; }
@@ -1473,7 +1550,7 @@ body {
 
 <!-- ===================== AMBASSADOR COURSE ===================== -->
 <div class="screen" id="course-ambassador">
-  <div class="cd-hero" style="background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 50%,var(--blue) 100%);">
+  <div class="cd-hero" style="background:linear-gradient(135deg,var(--teal) 0%,var(--teal-mid) 50%,var(--teal-light) 100%);">
     <button class="cd-back" onclick="go('academy')">&#x2190; Academy</button>
     <h1>Become an Ambassador</h1>
     <p class="cd-sub">Learn what it means to represent SSDP</p>
@@ -1538,11 +1615,90 @@ body {
   </div>
 </div>
 
-<!-- ===================== MAP ===================== -->
-<div class="screen has-tabs" id="map">
+<!-- ===================== SHOP SENSIBLY ===================== -->
+<div class="screen has-tabs" id="shop">
   <div class="hdr">
-    <div class="hdr-title-lg">Roundup Finder</div>
+    <div class="hdr-title-lg">Shop Sensibly</div>
   </div>
+
+  <div class="shop-banner">
+    <span class="shop-banner-icon">&#x1F6CD;&#xFE0F;</span>
+    <div>
+      <h4>Shop &amp; Support SSDP</h4>
+      <p>Every purchase supports drug policy reform</p>
+    </div>
+  </div>
+
+  <div class="sec-hdr"><span class="sec-title" style="font-size:15px;">SSDP Merch</span></div>
+  <div class="product-grid">
+    <div class="product-card">
+      <div class="product-img" style="background:linear-gradient(135deg,#E8EEFF,#DBEAFE);">&#x1F455;</div>
+      <div class="product-info">
+        <h4>SSDP Logo T-Shirt</h4>
+        <div class="product-meta">
+          <span class="product-price">$25</span>
+          <span class="product-tag merch">MERCH</span>
+        </div>
+      </div>
+    </div>
+    <div class="product-card">
+      <div class="product-img" style="background:linear-gradient(135deg,#FCE4EC,#F8BBD0);">&#x1F9E2;</div>
+      <div class="product-info">
+        <h4>SSDP Dad Hat</h4>
+        <div class="product-meta">
+          <span class="product-price">$22</span>
+          <span class="product-tag merch">MERCH</span>
+        </div>
+      </div>
+    </div>
+    <div class="product-card">
+      <div class="product-img" style="background:linear-gradient(135deg,#E0E7FF,#C7D2FE);">&#x1F4F1;</div>
+      <div class="product-info">
+        <h4>SSDP Sticker Pack</h4>
+        <div class="product-meta">
+          <span class="product-price">$8</span>
+          <span class="product-tag merch">MERCH</span>
+        </div>
+      </div>
+    </div>
+    <div class="product-card">
+      <div class="product-img" style="background:linear-gradient(135deg,#D1FAE5,#A7F3D0);">&#x1F4CC;</div>
+      <div class="product-info">
+        <h4>Enamel Pin Set</h4>
+        <div class="product-meta">
+          <span class="product-price">$12</span>
+          <span class="product-tag merch">MERCH</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-hdr"><span class="sec-title" style="font-size:15px;">Affiliate Partners</span><button class="sec-link">See All</button></div>
+  <div class="product-grid" style="margin-bottom:24px;">
+    <div class="product-card">
+      <div class="product-img" style="background:linear-gradient(135deg,#F0FDF4,#DCFCE7);">&#x1F33F;</div>
+      <div class="product-info">
+        <h4>DanceSafe Test Kits</h4>
+        <div class="product-meta">
+          <span class="product-price">$20+</span>
+          <span class="product-tag affiliate">PARTNER</span>
+        </div>
+      </div>
+    </div>
+    <div class="product-card">
+      <div class="product-img" style="background:linear-gradient(135deg,#FEF3C7,#FDE68A);">&#x1F4D6;</div>
+      <div class="product-info">
+        <h4>Drug Policy Alliance Books</h4>
+        <div class="product-meta">
+          <span class="product-price">$15+</span>
+          <span class="product-tag affiliate">PARTNER</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="height:8px"></div>
+  <div class="sec-hdr"><span class="sec-title" style="font-size:15px;">Find Sensible Businesses</span></div>
 
   <div class="map-search-bar">
     <div class="map-input-wrap">
@@ -1560,9 +1716,7 @@ body {
     <div class="map-label">5 Roundup businesses nearby</div>
   </div>
 
-  <div style="height:16px"></div>
-  <div class="sec-hdr"><span class="sec-title" style="font-size:15px;">Nearby</span></div>
-
+  <div style="height:12px"></div>
   <div class="biz-card">
     <div class="biz-marker">&#x1F4CD;</div>
     <div class="biz-info"><h4>Green Wellness Collective</h4><p>123 Main St, Anytown, NJ</p></div>
@@ -1577,11 +1731,6 @@ body {
     <div class="biz-marker">&#x1F4CD;</div>
     <div class="biz-info"><h4>Garden State Remedies</h4><p>789 Elm St, Maplewood, NJ</p></div>
     <div class="biz-right"><div class="biz-dist">2.8 mi</div><button class="biz-dir">Directions</button></div>
-  </div>
-  <div class="biz-card">
-    <div class="biz-marker">&#x1F4CD;</div>
-    <div class="biz-info"><h4>The Healing Leaf</h4><p>321 Pine Rd, Montclair, NJ</p></div>
-    <div class="biz-right"><div class="biz-dist">3.5 mi</div><button class="biz-dir">Directions</button></div>
   </div>
 
   <div style="height:20px"></div>
@@ -1601,17 +1750,23 @@ body {
   <div class="hdr" style="padding-bottom:0;">
     <div class="hdr-row" style="margin-bottom:10px;">
       <div class="hdr-title-lg">Chat</div>
-      <span style="font-size:12px;color:var(--gray-400);font-weight:600;">247 ambassadors</span>
+      <button onclick="openModal('directory')" style="font-family:inherit;font-size:12px;font-weight:700;color:var(--blue);background:var(--sky);border:none;padding:6px 12px;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:4px;">&#x1F465; Directory</button>
     </div>
   </div>
 
+  <div class="ch-section-label">Your Channels</div>
   <div class="ch-list">
-    <div class="ch-item on"><div class="ch-hash">#</div><span class="ch-name">general</span><span class="ch-badge">3</span></div>
-    <div class="ch-item"><div class="ch-hash">#</div><span class="ch-name">policy-alerts</span><span class="ch-badge">1</span></div>
+    <div class="ch-item on"><div class="ch-hash">#</div><span class="ch-name">ambassador-chat</span><span class="ch-badge">3</span></div>
     <div class="ch-item"><div class="ch-hash">#</div><span class="ch-name">my-chapter (Rutgers SSDP)</span></div>
-    <div class="ch-item"><div class="ch-hash">#</div><span class="ch-name">harm-reduction</span></div>
-    <div class="ch-item"><div class="ch-hash">#</div><span class="ch-name">lobby-day-2026</span></div>
-    <div class="ch-item"><div class="ch-hash">#</div><span class="ch-name">just-say-know</span></div>
+    <div class="ch-item"><div class="ch-hash">#</div><span class="ch-name">policy-alerts</span><span class="ch-badge">1</span></div>
+  </div>
+  <div class="ch-section-label">Unlock with Onboarding</div>
+  <div class="ch-list">
+    <div class="ch-item locked"><div class="ch-hash">&#x1F512;</div><span class="ch-name">committee-chat</span><span class="ch-lock-hint">Join a committee</span></div>
+    <div class="ch-item locked"><div class="ch-hash">&#x1F512;</div><span class="ch-name">committee-chairs</span><span class="ch-lock-hint">Become a chair</span></div>
+    <div class="ch-item locked"><div class="ch-hash">&#x1F512;</div><span class="ch-name">board-chat</span><span class="ch-lock-hint">Board members</span></div>
+    <div class="ch-item locked"><div class="ch-hash">&#x1F512;</div><span class="ch-name">staff-chat</span><span class="ch-lock-hint">Staff only</span></div>
+    <div class="ch-item locked"><div class="ch-hash">&#x1F512;</div><span class="ch-name">board-staff</span><span class="ch-lock-hint">Board + Staff</span></div>
   </div>
   <div class="ch-divider"></div>
   <div class="chat-area">
@@ -1672,7 +1827,7 @@ body {
   </div>
   <div class="menu-group">
     <div class="menu-group-title">SSDP</div>
-    <div class="m-item"><div class="m-icon" style="background:#FFE4E6;color:#E11D48;">&#x1F6CD;&#xFE0F;</div><span class="m-label">SSDP Store</span><span class="m-arrow">&#x203A;</span></div>
+    <div class="m-item" onclick="go('shop')"><div class="m-icon" style="background:#FFE4E6;color:#E11D48;">&#x1F6CD;&#xFE0F;</div><span class="m-label">Shop Sensibly</span><span class="m-arrow">&#x203A;</span></div>
     <div class="m-item role-not-guest"><div class="m-icon" style="background:#FEE2E2;color:#DC2626;">&#x1F6A8;</div><span class="m-label">Action Alerts</span><span class="m-arrow">&#x203A;</span></div>
     <div class="m-item role-ambassador"><div class="m-icon" style="background:#D1FAE5;color:#059669;">&#x1F4B0;</div><span class="m-label">Apply for Grants</span><span class="m-arrow">&#x203A;</span></div>
     <div class="m-item"><div class="m-icon" style="background:#F1F5F9;color:#475569;">&#x1F4F0;</div><span class="m-label">News &amp; Blog</span><span class="m-arrow">&#x203A;</span></div>
@@ -1824,6 +1979,47 @@ body {
   </div>
 </div>
 
+<div class="modal-bg" id="m-directory" onclick="if(event.target===this)closeModal('directory')">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <h3>Ambassador Directory</h3>
+    <p style="margin-bottom:16px;">247 ambassadors across 42 chapters</p>
+    <div class="dir-grid">
+      <div class="dir-card">
+        <div class="dir-avatar" style="background:linear-gradient(135deg,var(--blue),var(--purple));">SM</div>
+        <div class="dir-info"><h4>Sarah M.</h4><p>UCLA SSDP &middot; Los Angeles, CA</p></div>
+        <span class="dir-pts">520 pts</span>
+      </div>
+      <div class="dir-card">
+        <div class="dir-avatar" style="background:linear-gradient(135deg,var(--green),#059669);">JK</div>
+        <div class="dir-info"><h4>James K.</h4><p>UF SSDP &middot; Gainesville, FL</p></div>
+        <span class="dir-pts">445 pts</span>
+      </div>
+      <div class="dir-card">
+        <div class="dir-avatar" style="background:linear-gradient(135deg,var(--gold),#CC8520);">ML</div>
+        <div class="dir-info"><h4>Maria L.</h4><p>UCLA SSDP &middot; Los Angeles, CA</p></div>
+        <span class="dir-pts">390 pts</span>
+      </div>
+      <div class="dir-card">
+        <div class="dir-avatar" style="background:linear-gradient(135deg,#F59E0B,#D97706);">AT</div>
+        <div class="dir-info"><h4>Alex T.</h4><p>NYU SSDP &middot; New York, NY</p></div>
+        <span class="dir-pts">365 pts</span>
+      </div>
+      <div class="dir-card">
+        <div class="dir-avatar" style="background:linear-gradient(135deg,var(--navy),var(--blue));">JD</div>
+        <div class="dir-info"><h4>Jamie Davis</h4><p>Rutgers SSDP &middot; New Brunswick, NJ</p></div>
+        <span class="dir-pts">340 pts</span>
+      </div>
+      <div class="dir-card">
+        <div class="dir-avatar" style="background:linear-gradient(135deg,#8B5CF6,#6D28D9);">RW</div>
+        <div class="dir-info"><h4>Rachel W.</h4><p>CU Boulder SSDP &middot; Boulder, CO</p></div>
+        <span class="dir-pts">285 pts</span>
+      </div>
+    </div>
+    <button class="modal-btn modal-btn-ghost" onclick="closeModal('directory')">Close</button>
+  </div>
+</div>
+
 <!-- ===================== TAB BAR ===================== -->
 <nav class="tab-bar hidden" id="tabs">
   <button class="tab-btn active" onclick="go('home')" data-t="home">
@@ -1832,8 +2028,8 @@ body {
   <button class="tab-btn" onclick="go('academy')" data-t="academy">
     <div class="t-icon">&#x1F4DA;</div><div class="t-label">Academy</div>
   </button>
-  <button class="tab-btn" onclick="go('map')" data-t="map">
-    <div class="t-icon">&#x1F5FA;&#xFE0F;</div><div class="t-label">Map</div>
+  <button class="tab-btn" onclick="go('shop')" data-t="shop">
+    <div class="t-icon">&#x1F6CD;&#xFE0F;</div><div class="t-label">Shop</div>
   </button>
   <button class="tab-btn" onclick="go('chat')" data-t="chat">
     <div class="t-icon">&#x1F4AC;</div><div class="t-label">Chat</div>

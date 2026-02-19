@@ -46,7 +46,7 @@
   --red: #EF4444;
   --red-light: #FEE2E2;
   --yellow: #F59E0B;
-  --purple: #8B5CF6;
+  /* --purple removed: not in SSDP brand palette */
   --gray-brand: #636467;
 
   /* Neutrals */
@@ -382,7 +382,7 @@ body {
 }
 .home-avatar {
   width: 40px; height: 40px; border-radius: 50%;
-  background: linear-gradient(135deg, var(--blue), var(--purple));
+  background: linear-gradient(135deg, var(--jwblue), var(--teal));
   display: flex; align-items: center; justify-content: center;
   font-size: 14px; font-weight: 800; color: white;
   border: 2px solid rgba(255,255,255,0.2);
@@ -457,7 +457,7 @@ body {
 /* Featured CTA */
 .featured-cta {
   margin: 0 20px 24px; padding: 18px 20px;
-  background: linear-gradient(135deg, var(--orange) 0%, #D98A1E 100%);
+  background: linear-gradient(135deg, var(--orange) 0%, #D48A20 100%);
   border-radius: var(--radius-lg);
   display: flex; align-items: center; gap: 16px;
   color: var(--navy); cursor: pointer;
@@ -523,10 +523,10 @@ body {
   display: inline-block; font-size: 10px; font-weight: 700; text-transform: uppercase;
   letter-spacing: 0.8px; padding: 3px 8px; border-radius: 6px; margin-bottom: 8px;
 }
-.nc-tag.policy { background: #EDE9FE; color: #7C3AED; }
-.nc-tag.event { background: #DBEAFE; color: #2563EB; }
+.nc-tag.policy { background: #E0F0F5; color: #136F8D; }
+.nc-tag.event { background: #DFF6F6; color: #12A09D; }
 .nc-tag.alert { background: var(--red-light); color: var(--red); }
-.nc-tag.win { background: var(--green-light); color: #059669; }
+.nc-tag.win { background: var(--green-light); color: #10B981; }
 .news-card h4 { font-size: 14px; font-weight: 700; color: var(--gray-800); line-height: 1.35; margin-bottom: 4px; }
 .news-card p { font-size: 12px; color: var(--gray-400); font-weight: 500; }
 
@@ -553,10 +553,10 @@ body {
   display: inline-flex; align-items: center; gap: 3px;
   font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 5px;
 }
-.cc-tag.new { background: #DBEAFE; color: #2563EB; }
-.cc-tag.done { background: var(--green-light); color: #059669; }
+.cc-tag.new { background: #FEF0D9; color: #D48A20; }
+.cc-tag.done { background: var(--green-light); color: #10B981; }
 .cc-tag.locked { background: var(--gray-100); color: var(--gray-400); }
-.cc-tag.start { background: #FEF3C7; color: #D97706; }
+.cc-tag.start { background: #FEF0D9; color: #FAA732; }
 .cc-progress { margin-top: 12px; }
 .cc-bar { height: 5px; background: var(--gray-100); border-radius: 3px; overflow: hidden; }
 .cc-bar-fill { height: 100%; border-radius: 3px; }
@@ -751,7 +751,7 @@ body {
   padding: 2px 6px; border-radius: 4px;
 }
 .product-tag.merch { background: var(--sky); color: var(--blue); }
-.product-tag.affiliate { background: #F0FDF4; color: #15803D; }
+.product-tag.affiliate { background: #DFF6F6; color: #12A09D; }
 
 /* ---- MAP / FINDER SECTION ---- */
 .map-container { position: relative; }
@@ -771,7 +771,7 @@ body {
 .map-input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(19,111,141,0.1); }
 .map-view {
   height: 280px; margin: 0 20px; border-radius: var(--radius-lg);
-  background: linear-gradient(135deg, #c3dafe 0%, #e0e7ff 40%, #dbeafe 100%);
+  background: linear-gradient(135deg, #C5E3EC 0%, #DFF6F6 40%, #E0F0F5 100%);
   position: relative; overflow: hidden;
   box-shadow: var(--shadow-md);
 }
@@ -992,7 +992,7 @@ body {
 .profile-hero > * { position: relative; z-index: 1; }
 .p-avatar {
   width: 76px; height: 76px; border-radius: 50%;
-  background: linear-gradient(135deg, var(--blue), var(--purple));
+  background: linear-gradient(135deg, var(--jwblue), var(--teal));
   margin: 0 auto 14px; display: flex; align-items: center; justify-content: center;
   font-size: 28px; font-weight: 800; color: white;
   border: 3px solid rgba(255,255,255,0.15);
@@ -1226,7 +1226,7 @@ body {
   <div class="sec-hdr"><span class="sec-title">Quick Actions</span></div>
   <div class="qa-grid">
     <button class="qa-item" onclick="go('academy')">
-      <div class="qa-icon" style="background:#EDE9FE;">&#x1F4DA;</div>
+      <div class="qa-icon" style="background:#E0F0F5;">&#x1F4DA;</div>
       <span class="qa-label">Continue Training</span>
     </button>
     <button class="qa-item" onclick="openModal('alert')">
@@ -1234,11 +1234,11 @@ body {
       <span class="qa-label">Action Alert</span>
     </button>
     <button class="qa-item" onclick="openModal('report')">
-      <div class="qa-icon" style="background:#D1FAE5;">&#x1F4CB;</div>
+      <div class="qa-icon" style="background:#DFF6F6;">&#x1F4CB;</div>
       <span class="qa-label">Report Activity</span>
     </button>
     <button class="qa-item" onclick="showLobby()">
-      <div class="qa-icon" style="background:#DBEAFE;">&#x1F3DB;&#xFE0F;</div>
+      <div class="qa-icon" style="background:#D9E6ED;">&#x1F3DB;&#xFE0F;</div>
       <span class="qa-label">Lobby Day</span>
     </button>
   </div>
@@ -1342,7 +1342,7 @@ body {
 
   <div class="course-card" onclick="go('course-thr')">
     <div class="cc-top">
-      <div class="cc-icon" style="background:linear-gradient(135deg,#FFEDD5,#FED7AA);">&#x1F6AD;</div>
+      <div class="cc-icon" style="background:linear-gradient(135deg,#FEF0D9,#FCDCAB);">&#x1F6AD;</div>
       <div class="cc-info">
         <h4>Tobacco Harm Reduction</h4>
         <div class="cc-meta">
@@ -1375,7 +1375,7 @@ body {
 
   <div class="course-card">
     <div class="cc-top">
-      <div class="cc-icon" style="background:linear-gradient(135deg,#E0E7FF,#C7D2FE);">&#x1F4A8;</div>
+      <div class="cc-icon" style="background:linear-gradient(135deg,#E0F0F5,#C5E3EC);">&#x1F4A8;</div>
       <div class="cc-info">
         <h4>Nicotine &amp; Vaping</h4>
         <div class="cc-meta"><span>~30 min</span><span>&middot;</span><span>3 modules</span></div>
@@ -1387,7 +1387,7 @@ body {
 
   <div class="course-card">
     <div class="cc-top">
-      <div class="cc-icon" style="background:linear-gradient(135deg,#EDE9FE,#DDD6FE);">&#x1F52E;</div>
+      <div class="cc-icon" style="background:linear-gradient(135deg,#DFF6F6,#C5EDED);">&#x1F52E;</div>
       <div class="cc-info">
         <h4>Psychedelics Education</h4>
         <div class="cc-meta"><span>~45 min</span><span>&middot;</span><span>4 modules</span></div>
@@ -1399,7 +1399,7 @@ body {
 
   <div class="course-card">
     <div class="cc-top">
-      <div class="cc-icon" style="background:linear-gradient(135deg,#FEF3C7,#FDE68A);">&#x1F393;</div>
+      <div class="cc-icon" style="background:linear-gradient(135deg,#FEF0D9,#FCDCAB);">&#x1F393;</div>
       <div class="cc-info">
         <h4>Oaksterdam University</h4>
         <div class="cc-meta"><span>~2 hours</span><span>&middot;</span><span>Partner course</span></div>
@@ -1415,7 +1415,7 @@ body {
   <!-- Ambassador module — Ambassador view (completed) -->
   <div class="course-card role-ambassador" onclick="go('course-ambassador')" style="display:block;">
     <div class="cc-top">
-      <div class="cc-icon" style="background:linear-gradient(135deg,#FEF3C7,#FDE68A);">&#x1F31F;</div>
+      <div class="cc-icon" style="background:linear-gradient(135deg,#FEF0D9,#FCDCAB);">&#x1F31F;</div>
       <div class="cc-info">
         <h4>Become an SSDP Ambassador</h4>
         <div class="cc-meta">
@@ -1433,7 +1433,7 @@ body {
   <!-- Ambassador module — Registered view (not started) -->
   <div class="course-card role-registered" onclick="go('course-ambassador')" style="display:none;">
     <div class="cc-top">
-      <div class="cc-icon" style="background:linear-gradient(135deg,#FEF3C7,#FDE68A);">&#x1F31F;</div>
+      <div class="cc-icon" style="background:linear-gradient(135deg,#FEF0D9,#FCDCAB);">&#x1F31F;</div>
       <div class="cc-info">
         <h4>Become an SSDP Ambassador</h4>
         <div class="cc-meta">
@@ -1448,7 +1448,7 @@ body {
   <!-- Ambassador module — Guest view (locked) -->
   <div class="course-card role-guest" style="display:none;pointer-events:none;">
     <div class="cc-top">
-      <div class="cc-icon" style="background:linear-gradient(135deg,#FEF3C7,#FDE68A);">&#x1F31F;</div>
+      <div class="cc-icon" style="background:linear-gradient(135deg,#FEF0D9,#FCDCAB);">&#x1F31F;</div>
       <div class="cc-info">
         <h4>Become an SSDP Ambassador</h4>
         <div class="cc-meta"><span>~20 min</span></div>
@@ -1459,7 +1459,7 @@ body {
 
   <div class="course-card role-not-guest">
     <div class="cc-top">
-      <div class="cc-icon" style="background:linear-gradient(135deg,#DBEAFE,#BFDBFE);">&#x1F465;</div>
+      <div class="cc-icon" style="background:linear-gradient(135deg,#E0F0F5,#C5E3EC);">&#x1F465;</div>
       <div class="cc-info">
         <h4>Explore SSDP Committees</h4>
         <div class="cc-meta"><span>~15 min</span><span>&middot;</span><span>Apply to join</span></div>
@@ -1579,7 +1579,7 @@ body {
   <div class="cd-body">
     <div class="cd-section-title">Introduction to THR</div>
 
-    <div class="cd-media" style="background:linear-gradient(135deg,#9A3412,#C2410C);">
+    <div class="cd-media" style="background:linear-gradient(135deg,#C47D1E,#D48A20);">
       <div class="cd-media-inner">
         <div class="play-btn">&#x25B6;</div>
         <span>Watch: What is Tobacco Harm Reduction? (4:15)</span>
@@ -1610,7 +1610,7 @@ body {
       <p>The UK's NHS actively recommends e-cigarettes as a cessation tool. Sweden has the lowest smoking rate in Europe thanks to snus. In the U.S., the FDA evaluates "modified risk tobacco products" that may reduce exposure to harmful chemicals.</p>
     </div>
 
-    <div class="quiz-block" style="border-left-color:var(--orange);background:#FFF7ED;">
+    <div class="quiz-block" style="border-left-color:var(--orange);background:#FEF0D9;">
       <div class="qb-label" style="color:var(--orange);">Knowledge Check</div>
       <div class="qb-q">What is the primary driver of tobacco-related disease?</div>
       <div class="q-opt" onclick="sel(this)"><div class="q-radio"></div><span>Nicotine itself</span></div>
@@ -1715,7 +1715,7 @@ body {
   <div class="sec-hdr"><span class="sec-title" style="font-size:15px;">SSDP Merch</span></div>
   <div class="product-grid">
     <div class="product-card">
-      <div class="product-img" style="background:linear-gradient(135deg,#E8EEFF,#DBEAFE);">&#x1F455;</div>
+      <div class="product-img" style="background:linear-gradient(135deg,#E0F0F5,#C5E3EC);">&#x1F455;</div>
       <div class="product-info">
         <h4>SSDP Logo T-Shirt</h4>
         <div class="product-meta">
@@ -1725,7 +1725,7 @@ body {
       </div>
     </div>
     <div class="product-card">
-      <div class="product-img" style="background:linear-gradient(135deg,#FCE4EC,#F8BBD0);">&#x1F9E2;</div>
+      <div class="product-img" style="background:linear-gradient(135deg,#FEF0D9,#FCDCAB);">&#x1F9E2;</div>
       <div class="product-info">
         <h4>SSDP Dad Hat</h4>
         <div class="product-meta">
@@ -1735,7 +1735,7 @@ body {
       </div>
     </div>
     <div class="product-card">
-      <div class="product-img" style="background:linear-gradient(135deg,#E0E7FF,#C7D2FE);">&#x1F4F1;</div>
+      <div class="product-img" style="background:linear-gradient(135deg,#DFF6F6,#C5EDED);">&#x1F4F1;</div>
       <div class="product-info">
         <h4>SSDP Sticker Pack</h4>
         <div class="product-meta">
@@ -1745,7 +1745,7 @@ body {
       </div>
     </div>
     <div class="product-card">
-      <div class="product-img" style="background:linear-gradient(135deg,#D1FAE5,#A7F3D0);">&#x1F4CC;</div>
+      <div class="product-img" style="background:linear-gradient(135deg,#F6FDD9,#ECFAAD);">&#x1F4CC;</div>
       <div class="product-info">
         <h4>Enamel Pin Set</h4>
         <div class="product-meta">
@@ -1759,7 +1759,7 @@ body {
   <div class="sec-hdr"><span class="sec-title" style="font-size:15px;">Affiliate Partners</span><button class="sec-link">See All</button></div>
   <div class="product-grid" style="margin-bottom:24px;">
     <div class="product-card">
-      <div class="product-img" style="background:linear-gradient(135deg,#F0FDF4,#DCFCE7);">&#x1F33F;</div>
+      <div class="product-img" style="background:linear-gradient(135deg,#DFF6F6,#C5EDED);">&#x1F33F;</div>
       <div class="product-info">
         <h4>DanceSafe Test Kits</h4>
         <div class="product-meta">
@@ -1769,7 +1769,7 @@ body {
       </div>
     </div>
     <div class="product-card">
-      <div class="product-img" style="background:linear-gradient(135deg,#FEF3C7,#FDE68A);">&#x1F4D6;</div>
+      <div class="product-img" style="background:linear-gradient(135deg,#FEF0D9,#FCDCAB);">&#x1F4D6;</div>
       <div class="product-info">
         <h4>Drug Policy Alliance Books</h4>
         <div class="product-meta">
@@ -1903,25 +1903,25 @@ body {
   <!-- Account section (ambassador + registered only) -->
   <div class="menu-group role-not-guest">
     <div class="menu-group-title">Account</div>
-    <div class="m-item"><div class="m-icon" style="background:#EDE9FE;color:#7C3AED;">&#x1F464;</div><span class="m-label">Profile &amp; Settings</span><span class="m-arrow">&#x203A;</span></div>
-    <div class="m-item role-ambassador"><div class="m-icon" style="background:#FEF3C7;color:#D97706;">&#x2B50;</div><span class="m-label">Points &amp; Rewards</span><span class="m-arrow">&#x203A;</span></div>
-    <div class="m-item role-ambassador"><div class="m-icon" style="background:#DBEAFE;color:#2563EB;">&#x1F465;</div><span class="m-label">My Chapter</span><span class="m-arrow">&#x203A;</span></div>
-    <div class="m-item role-ambassador"><div class="m-icon" style="background:#D1FAE5;color:#059669;">&#x1F4DC;</div><span class="m-label">My Certificates</span><span class="m-arrow">&#x203A;</span></div>
+    <div class="m-item"><div class="m-icon" style="background:#E0F0F5;color:#136F8D;">&#x1F464;</div><span class="m-label">Profile &amp; Settings</span><span class="m-arrow">&#x203A;</span></div>
+    <div class="m-item role-ambassador"><div class="m-icon" style="background:#FEF0D9;color:#FAA732;">&#x2B50;</div><span class="m-label">Points &amp; Rewards</span><span class="m-arrow">&#x203A;</span></div>
+    <div class="m-item role-ambassador"><div class="m-icon" style="background:#DFF6F6;color:#17BEBB;">&#x1F465;</div><span class="m-label">My Chapter</span><span class="m-arrow">&#x203A;</span></div>
+    <div class="m-item role-ambassador"><div class="m-icon" style="background:#F6FDD9;color:#8AB100;">&#x1F4DC;</div><span class="m-label">My Certificates</span><span class="m-arrow">&#x203A;</span></div>
   </div>
   <div class="menu-group">
     <div class="menu-group-title">SSDP</div>
-    <div class="m-item" onclick="go('shop')"><div class="m-icon" style="background:#FFE4E6;color:#E11D48;">&#x1F6CD;&#xFE0F;</div><span class="m-label">Shop Sensibly</span><span class="m-arrow">&#x203A;</span></div>
-    <div class="m-item role-not-guest"><div class="m-icon" style="background:#FEE2E2;color:#DC2626;">&#x1F6A8;</div><span class="m-label">Action Alerts</span><span class="m-arrow">&#x203A;</span></div>
-    <div class="m-item role-ambassador"><div class="m-icon" style="background:#D1FAE5;color:#059669;">&#x1F4B0;</div><span class="m-label">Apply for Grants</span><span class="m-arrow">&#x203A;</span></div>
-    <div class="m-item"><div class="m-icon" style="background:#F1F5F9;color:#475569;">&#x1F4F0;</div><span class="m-label">News &amp; Blog</span><span class="m-arrow">&#x203A;</span></div>
-    <div class="m-item role-not-guest"><div class="m-icon" style="background:#DBEAFE;color:#2563EB;">&#x1F4CA;</div><span class="m-label">Campus Gradebook</span><span class="m-arrow">&#x203A;</span></div>
-    <div class="m-item role-ambassador"><div class="m-icon" style="background:#D1FAE5;color:#059669;">&#x1F4CB;</div><span class="m-label">Report Stakeholder Interaction</span><span class="m-arrow">&#x203A;</span></div>
+    <div class="m-item" onclick="go('shop')"><div class="m-icon" style="background:#FEF0D9;color:#FAA732;">&#x1F6CD;&#xFE0F;</div><span class="m-label">Shop Sensibly</span><span class="m-arrow">&#x203A;</span></div>
+    <div class="m-item role-not-guest"><div class="m-icon" style="background:#FEE2E2;color:#EF4444;">&#x1F6A8;</div><span class="m-label">Action Alerts</span><span class="m-arrow">&#x203A;</span></div>
+    <div class="m-item role-ambassador"><div class="m-icon" style="background:#DFF6F6;color:#17BEBB;">&#x1F4B0;</div><span class="m-label">Apply for Grants</span><span class="m-arrow">&#x203A;</span></div>
+    <div class="m-item"><div class="m-icon" style="background:#F1F1F2;color:#636467;">&#x1F4F0;</div><span class="m-label">News &amp; Blog</span><span class="m-arrow">&#x203A;</span></div>
+    <div class="m-item role-not-guest"><div class="m-icon" style="background:#E0F0F5;color:#136F8D;">&#x1F4CA;</div><span class="m-label">Campus Gradebook</span><span class="m-arrow">&#x203A;</span></div>
+    <div class="m-item role-ambassador"><div class="m-icon" style="background:#DFF6F6;color:#17BEBB;">&#x1F4CB;</div><span class="m-label">Report Stakeholder Interaction</span><span class="m-arrow">&#x203A;</span></div>
   </div>
   <div class="menu-group">
     <div class="menu-group-title">Support</div>
-    <div class="m-item"><div class="m-icon" style="background:#F1F5F9;color:#64748B;">&#x2139;&#xFE0F;</div><span class="m-label">About SSDP</span><span class="m-arrow">&#x203A;</span></div>
-    <div class="m-item"><div class="m-icon" style="background:#F1F5F9;color:#64748B;">&#x2709;&#xFE0F;</div><span class="m-label">Contact Us</span><span class="m-arrow">&#x203A;</span></div>
-    <div class="m-item"><div class="m-icon" style="background:#F1F5F9;color:#64748B;">&#x1F512;</div><span class="m-label">Privacy Policy</span><span class="m-arrow">&#x203A;</span></div>
+    <div class="m-item"><div class="m-icon" style="background:#F1F1F2;color:#636467;">&#x2139;&#xFE0F;</div><span class="m-label">About SSDP</span><span class="m-arrow">&#x203A;</span></div>
+    <div class="m-item"><div class="m-icon" style="background:#F1F1F2;color:#636467;">&#x2709;&#xFE0F;</div><span class="m-label">Contact Us</span><span class="m-arrow">&#x203A;</span></div>
+    <div class="m-item"><div class="m-icon" style="background:#F1F1F2;color:#636467;">&#x1F512;</div><span class="m-label">Privacy Policy</span><span class="m-arrow">&#x203A;</span></div>
   </div>
   <div style="height:20px"></div>
 </div>

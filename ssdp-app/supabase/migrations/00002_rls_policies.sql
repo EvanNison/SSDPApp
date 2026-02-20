@@ -178,9 +178,9 @@ create policy "menu_modify_admin" on public.menu_items
 create policy "points_select_own" on public.points_log
   for select using (user_id = auth.uid() or public.is_admin_or_staff());
 
--- Points are inserted by edge functions (service role), not directly by users
-create policy "points_insert_service" on public.points_log
-  for insert with check (public.is_admin_or_staff());
+-- Points can be inserted by the user (from client after completing modules/quizzes) or admin
+create policy "points_insert_own" on public.points_log
+  for insert with check (user_id = auth.uid() or public.is_admin_or_staff());
 
 create policy "reports_select_own" on public.activity_reports
   for select using (user_id = auth.uid() or public.is_admin_or_staff());

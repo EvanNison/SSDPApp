@@ -2,5 +2,3 @@ node_modules/
 screenshots/
 test-results/
 screenshot-audit.mjs
-package.json
-package-lock.json

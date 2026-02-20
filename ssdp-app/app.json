@@ -1,0 +1,51 @@
+{
+  "expo": {
+    "name": "SSDP",
+    "slug": "ssdp-app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "ssdpapp",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/images/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#003249"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "org.ssdp.app",
+      "infoPlist": {
+        "NSCameraUsageDescription": "SSDP needs camera access for profile photos and activity reports.",
+        "NSPhotoLibraryUsageDescription": "SSDP needs photo library access for profile photos and activity reports."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#003249"
+      },
+      "package": "org.ssdp.app",
+      "edgeToEdgeEnabled": true,
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/images/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-secure-store"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "your-eas-project-id"
+      }
+    }
+  }
+}

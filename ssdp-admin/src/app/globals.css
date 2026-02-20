@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+:root {
+  --background: #F9FAFB;
+  --foreground: #003249;
+  --ssdp-blue: #136F8D;
+  --ssdp-orange: #FAA732;
+  --ssdp-teal: #17BEBB;
+  --ssdp-navy: #003249;
+  --ssdp-chartreuse: #DAF702;
+  --ssdp-gray: #636467;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-ssdp-blue: var(--ssdp-blue);
+  --color-ssdp-orange: var(--ssdp-orange);
+  --color-ssdp-teal: var(--ssdp-teal);
+  --color-ssdp-navy: var(--ssdp-navy);
+  --color-ssdp-chartreuse: var(--ssdp-chartreuse);
+  --color-ssdp-gray: var(--ssdp-gray);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}

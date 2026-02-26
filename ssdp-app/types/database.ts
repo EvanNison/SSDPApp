@@ -60,6 +60,7 @@ export interface Course {
   is_published: boolean;
   partner_name: string | null;
   points_bonus: number;
+  is_ambassador_course: boolean;
   created_at: string;
 }
 
@@ -144,6 +145,18 @@ export interface ActionAlert {
   call_to_action: string | null;
   target_contact: string | null;
   points_reward: number;
+  is_active: boolean;
+  created_at: string;
+}
+
+export interface LobbyEvent {
+  id: string;
+  title: string;
+  event_date: string | null;
+  location: string | null;
+  description: string | null;
+  schedule: Array<{ time: string; title: string; description?: string }> | null;
+  talking_points: Array<{ topic: string; points: string[] }> | null;
   is_active: boolean;
   created_at: string;
 }

@@ -10,6 +10,7 @@ import {
 import { StatusBar } from 'expo-status-bar';
 import { useStore } from '@/stores/useStore';
 import { supabase } from '@/lib/supabase';
+import { registerForPushNotifications, addNotificationResponseListener } from '@/lib/notifications';
 import "@/global.css";
 
 export { ErrorBoundary } from 'expo-router';
@@ -66,11 +67,25 @@ export default function RootLayout() {
         setSession(session);
         if (session) {
           await fetchProfile();
+          // Register for push notifications on login
+          registerForPushNotifications(session.user.id).catch(() => {});
         }
       }
     );
 
     return () => subscription.unsubscribe();
+  }, []);
+
+  // Handle notification taps (deep link to action_url)
+  useEffect(() => {
+    const cleanup = addNotificationResponseListener((actionUrl) => {
+      if (actionUrl) {
+        // Navigate to the action URL from the notification
+        const router = require('expo-router').router;
+        router.push(actionUrl);
+      }
+    });
+    return cleanup;
   }, []);
 
   useEffect(() => {
@@ -94,6 +109,20 @@ export default function RootLayout() {
             presentation: 'modal',
             headerShown: true,
             title: 'Ambassador Agreement',
+          }}
+        />
+        <Stack.Screen
+          name="alert/[alertId]"
+          options={{
+            headerShown: true,
+            title: 'Action Alert',
+          }}
+        />
+        <Stack.Screen
+          name="lobby/[eventId]"
+          options={{
+            headerShown: true,
+            title: 'Lobby Day',
           }}
         />
       </Stack>

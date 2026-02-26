@@ -56,3 +56,34 @@ export async function updateProfile(userId: string, updates: Record<string, unkn
   if (error) throw error;
   return data;
 }
+
+export async function uploadAvatar(userId: string, uri: string): Promise<string> {
+  // Strip query params before extracting extension
+  const pathOnly = uri.split('?')[0];
+  const ext = pathOnly.split('.').pop()?.toLowerCase() ?? 'jpg';
+  const safeExt = ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext) ? ext : 'jpg';
+  const fileName = `${userId}.${safeExt}`;
+
+  // Convert URI to blob for upload
+  const response = await fetch(uri);
+  const blob = await response.blob();
+
+  const { error: uploadError } = await supabase.storage
+    .from('avatars')
+    .upload(fileName, blob, { upsert: true, contentType: `image/${safeExt === 'jpg' ? 'jpeg' : safeExt}` });
+
+  if (uploadError) throw uploadError;
+
+  const { data } = supabase.storage.from('avatars').getPublicUrl(fileName);
+
+  // Update profile with the new avatar URL
+  await updateProfile(userId, { avatar_url: data.publicUrl });
+
+  return data.publicUrl;
+}
+
+export async function deleteAccount() {
+  // Delete the user's auth account — cascade deletes profile and all related data
+  const { error } = await supabase.rpc('delete_own_account');
+  if (error) throw error;
+}

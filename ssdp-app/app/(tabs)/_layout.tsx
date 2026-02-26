@@ -1,6 +1,9 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Tabs } from 'expo-router';
+import { useEffect, useState } from 'react';
 import { brand } from '@/constants/Colors';
+import { useStore } from '@/stores/useStore';
+import { supabase } from '@/lib/supabase';
 
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof FontAwesome>['name'];
@@ -10,6 +13,25 @@ function TabBarIcon(props: {
 }
 
 export default function TabLayout() {
+  const profile = useStore((s) => s.profile);
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    if (!profile?.id) {
+      setUnreadCount(0);
+      return;
+    }
+
+    supabase
+      .from('notifications')
+      .select('id', { count: 'exact', head: true })
+      .eq('user_id', profile.id)
+      .eq('is_read', false)
+      .then(({ count }) => {
+        setUnreadCount(count ?? 0);
+      });
+  }, [profile?.id]);
+
   return (
     <Tabs
       screenOptions={{
@@ -65,6 +87,8 @@ export default function TabLayout() {
           title: 'More',
           headerShown: false,
           tabBarIcon: ({ color }) => <TabBarIcon name="bars" color={color} />,
+          tabBarBadge: unreadCount > 0 ? unreadCount : undefined,
+          tabBarBadgeStyle: { backgroundColor: '#EF4444', fontSize: 10 },
         }}
       />
     </Tabs>

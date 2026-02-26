@@ -16,6 +16,9 @@ export default function MoreLayout() {
       <Stack.Screen name="profile" options={{ title: 'Profile' }} />
       <Stack.Screen name="notifications" options={{ title: 'Notifications' }} />
       <Stack.Screen name="points" options={{ title: 'Points' }} />
+      <Stack.Screen name="reports" options={{ title: 'Activity Reports' }} />
+      <Stack.Screen name="news" options={{ title: 'News' }} />
+      <Stack.Screen name="privacy" options={{ title: 'Privacy Policy' }} />
     </Stack>
   );
 }

@@ -12,6 +12,12 @@ const NAV_ITEMS = [
   { label: "News", href: "/news", icon: "📰" },
   { label: "Menu", href: "/menu", icon: "☰" },
   { label: "Chapters", href: "/chapters", icon: "🏫" },
+  { label: "Ambassadors", href: "/ambassadors", icon: "🎖️" },
+  { label: "Chat", href: "/chat", icon: "💬" },
+  { label: "Notifications", href: "/notifications", icon: "🔔" },
+  { label: "Reports", href: "/reports", icon: "📋" },
+  { label: "Alerts", href: "/alerts", icon: "🚨" },
+  { label: "Lobby Day", href: "/lobby", icon: "🏛️" },
 ];
 
 export default function Sidebar() {

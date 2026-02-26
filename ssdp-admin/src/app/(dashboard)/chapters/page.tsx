@@ -17,6 +17,8 @@ export default function ChaptersPage() {
   const [chapters, setChapters] = useState<Chapter[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
+  const [selectedChapter, setSelectedChapter] = useState<Chapter | null>(null);
+  const [members, setMembers] = useState<{ id: string; full_name: string | null; email: string; role: string; points: number }[]>([]);
 
   const [formName, setFormName] = useState("");
   const [formUniversity, setFormUniversity] = useState("");
@@ -67,6 +69,16 @@ export default function ChaptersPage() {
         c.id === id ? { ...c, is_active: !currentlyActive } : c
       )
     );
+  };
+
+  const viewChapterDetail = async (chapter: Chapter) => {
+    setSelectedChapter(chapter);
+    const { data } = await supabase
+      .from("profiles")
+      .select("id, full_name, email, role, points")
+      .eq("chapter_id", chapter.id)
+      .order("points", { ascending: false });
+    setMembers(data ?? []);
   };
 
   return (
@@ -142,7 +154,8 @@ export default function ChaptersPage() {
         </form>
       )}
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+      <div className="flex gap-6">
+      <div className={`bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden ${selectedChapter ? 'flex-1' : 'w-full'}`}>
         <table className="w-full">
           <thead className="bg-gray-50">
             <tr>
@@ -184,7 +197,7 @@ export default function ChaptersPage() {
               </tr>
             ) : (
               chapters.map((ch) => (
-                <tr key={ch.id} className="hover:bg-gray-50">
+                <tr key={ch.id} className={`hover:bg-gray-50 cursor-pointer ${selectedChapter?.id === ch.id ? 'bg-blue-50' : ''}`} onClick={() => viewChapterDetail(ch)}>
                   <td className="px-6 py-3 text-sm font-medium text-ssdp-navy">
                     {ch.name}
                   </td>
@@ -199,7 +212,7 @@ export default function ChaptersPage() {
                   </td>
                   <td className="px-6 py-3">
                     <button
-                      onClick={() => toggleActive(ch.id, ch.is_active)}
+                      onClick={(e) => { e.stopPropagation(); toggleActive(ch.id, ch.is_active); }}
                       className={`text-xs px-3 py-1 rounded-full font-semibold ${
                         ch.is_active
                           ? "bg-green-100 text-green-700"
@@ -214,6 +227,62 @@ export default function ChaptersPage() {
             )}
           </tbody>
         </table>
+      </div>
+
+      {selectedChapter && (
+        <div className="w-96 space-y-4">
+          {/* Chapter info card */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold text-ssdp-navy">{selectedChapter.name}</h2>
+              <button onClick={() => setSelectedChapter(null)} className="text-ssdp-gray hover:text-ssdp-navy text-sm">&#x2715;</button>
+            </div>
+            <div className="space-y-2 text-sm">
+              {selectedChapter.university && (
+                <div className="flex justify-between">
+                  <span className="text-ssdp-gray">University</span>
+                  <span className="text-ssdp-navy">{selectedChapter.university}</span>
+                </div>
+              )}
+              <div className="flex justify-between">
+                <span className="text-ssdp-gray">Location</span>
+                <span className="text-ssdp-navy">{[selectedChapter.city, selectedChapter.state].filter(Boolean).join(', ') || '—'}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-ssdp-gray">Total Points</span>
+                <span className="text-ssdp-navy font-semibold">{selectedChapter.total_points}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-ssdp-gray">Members</span>
+                <span className="text-ssdp-navy font-semibold">{members.length}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Members list */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
+            <h3 className="text-sm font-semibold text-ssdp-navy mb-3">Members</h3>
+            {members.length === 0 ? (
+              <p className="text-xs text-ssdp-gray">No members in this chapter.</p>
+            ) : (
+              <div className="space-y-2 max-h-96 overflow-y-auto">
+                {members.map((m) => (
+                  <div key={m.id} className="flex items-center justify-between text-sm py-1">
+                    <div>
+                      <p className="text-ssdp-navy font-medium text-sm">{m.full_name || 'Unnamed'}</p>
+                      <p className="text-ssdp-gray text-xs">{m.email}</p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs bg-gray-100 text-ssdp-gray px-2 py-0.5 rounded-full capitalize">{m.role.replace('_', ' ')}</span>
+                      <span className="text-xs font-semibold text-ssdp-navy">{m.points} pts</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
       </div>
     </div>
   );

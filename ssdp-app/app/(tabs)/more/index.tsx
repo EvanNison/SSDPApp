@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { View, Text, ScrollView, Pressable, Linking, Alert } from 'react-native';
+import { View, Text, ScrollView, Pressable, Linking, Alert, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useStore } from '@/stores/useStore';
@@ -36,11 +36,19 @@ function ProfileCard() {
       onPress={() => router.push('/(tabs)/more/profile')}
     >
       <View className="flex-row items-center">
-        <View className="w-14 h-14 rounded-full bg-ssdp-blue items-center justify-center mr-4">
-          <Text className="font-montserrat text-white text-xl">
-            {profile?.full_name?.[0]?.toUpperCase() ?? '?'}
-          </Text>
-        </View>
+        {profile?.avatar_url ? (
+          <Image
+            source={{ uri: profile.avatar_url }}
+            className="w-14 h-14 rounded-full mr-4"
+            resizeMode="cover"
+          />
+        ) : (
+          <View className="w-14 h-14 rounded-full bg-ssdp-blue items-center justify-center mr-4">
+            <Text className="font-montserrat text-white text-xl">
+              {profile?.full_name?.[0]?.toUpperCase() ?? '?'}
+            </Text>
+          </View>
+        )}
         <View className="flex-1">
           <Text className="font-opensans-bold text-white text-base">
             {profile?.full_name ?? 'SSDP Member'}
@@ -120,6 +128,11 @@ export default function MoreScreen() {
   };
 
   const handleMenuPress = (item: MenuItem) => {
+    // Intercept Privacy Policy to use in-app screen
+    if (item.label === 'Privacy Policy') {
+      router.push('/(tabs)/more/privacy');
+      return;
+    }
     if (item.link_type === 'screen' && item.link_value) {
       router.push(item.link_value as any);
     } else if (item.link_type === 'external' && item.link_value) {
@@ -190,6 +203,30 @@ export default function MoreScreen() {
                 <FontAwesome name="star" size={18} color={brand.chartreuse} />
                 <Text className="font-opensans-semibold text-ssdp-navy text-base flex-1 ml-4">
                   Points History
+                </Text>
+                <FontAwesome name="chevron-right" size={14} color={brand.gray} />
+              </Pressable>
+
+              <Pressable
+                className="bg-white rounded-xl p-4 mb-2 flex-row items-center active:opacity-90"
+                style={{ elevation: 1 }}
+                onPress={() => router.push('/(tabs)/more/reports')}
+              >
+                <FontAwesome name="file-text-o" size={18} color={brand.teal} />
+                <Text className="font-opensans-semibold text-ssdp-navy text-base flex-1 ml-4">
+                  Activity Reports
+                </Text>
+                <FontAwesome name="chevron-right" size={14} color={brand.gray} />
+              </Pressable>
+
+              <Pressable
+                className="bg-white rounded-xl p-4 mb-2 flex-row items-center active:opacity-90"
+                style={{ elevation: 1 }}
+                onPress={() => router.push('/(tabs)/more/news')}
+              >
+                <FontAwesome name="newspaper-o" size={18} color={brand.navy} />
+                <Text className="font-opensans-semibold text-ssdp-navy text-base flex-1 ml-4">
+                  News
                 </Text>
                 <FontAwesome name="chevron-right" size={14} color={brand.gray} />
               </Pressable>

@@ -10,6 +10,7 @@ import {
 import { useRouter } from 'expo-router';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { supabase } from '@/lib/supabase';
+import { fetchWithCache, setCache } from '@/lib/cache';
 import { useStore } from '@/stores/useStore';
 import { brand } from '@/constants/Colors';
 import { hasMinRole, type UserRole } from '@/constants/config';
@@ -116,13 +117,16 @@ export default function AcademyScreen() {
 
   const fetchCourses = async () => {
     try {
-      const { data: coursesData } = await supabase
-        .from('courses')
-        .select('*')
-        .eq('is_published', true)
-        .order('sort_order');
+      const { data: coursesData } = await fetchWithCache('courses_published', async () => {
+        const { data } = await supabase
+          .from('courses')
+          .select('*')
+          .eq('is_published', true)
+          .order('sort_order');
+        return data ?? [];
+      });
 
-      if (coursesData) setCourses(coursesData);
+      setCourses(coursesData);
 
       // Fetch user progress if logged in
       if (profile?.id) {

@@ -41,21 +41,8 @@ export async function awardPoints(
 
   if (updateError) throw updateError;
 
-  // Update chapter total if user belongs to one
-  if (profile.chapter_id) {
-    const { data: chapter } = await supabase
-      .from('chapters')
-      .select('total_points')
-      .eq('id', profile.chapter_id)
-      .single();
-
-    if (chapter) {
-      await supabase
-        .from('chapters')
-        .update({ total_points: (chapter.total_points || 0) + points })
-        .eq('id', profile.chapter_id);
-    }
-  }
+  // Chapter total_points is updated automatically via a Postgres trigger
+  // on points_log insert (see migration 00008)
 
   return newTotal;
 }

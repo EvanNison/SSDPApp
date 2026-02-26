@@ -1,6 +1,25 @@
 node_modules/
+.expo/
+dist/
+.next/
+out/
 screenshots/
 test-results/
-screenshot-audit.mjs
-package.json
-package-lock.json
+
+# Secrets — never commit
+.env
+.env.*
+!.env.example
+
+# Supabase CLI temp files
+ssdp-app/supabase/.temp/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+*.tsbuildinfo
+
+# Temporary test scripts
+test-*.mjs

@@ -68,32 +68,9 @@ export default function NewsPage() {
   const handleWPSync = async () => {
     setSyncing(true);
     try {
-      const response = await fetch(
-        "https://ssdp.org/wp-json/wp/v2/posts?per_page=10&_embed=wp:featuredmedia"
-      );
-      const posts = await response.json();
-
-      for (const post of posts) {
-        const title = post.title.rendered.replace(/<[^>]*>/g, "");
-        const excerpt = post.excerpt.rendered.replace(/<[^>]*>/g, "").trim();
-        const imageUrl =
-          post._embedded?.["wp:featuredmedia"]?.[0]?.source_url ?? null;
-
-        // Upsert by wp_post_id
-        await supabase.from("news").upsert(
-          {
-            title,
-            excerpt,
-            image_url: imageUrl,
-            external_url: post.link,
-            source: "wordpress",
-            wp_post_id: post.id,
-            published_at: post.date,
-          },
-          { onConflict: "wp_post_id" }
-        );
-      }
-
+      const res = await fetch("/api/sync-news", { method: "POST" });
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.error || "Sync failed");
       fetchNews();
     } catch (err) {
       alert("WordPress sync failed. Check console for details.");

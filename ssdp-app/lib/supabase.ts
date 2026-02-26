@@ -27,6 +27,15 @@ const ExpoSecureStoreAdapter = {
   },
 };
 
+// Custom lock implementation that avoids Navigator LockManager timeouts on web
+const lockNoOp = async <R>(
+  _name: string,
+  _acquireTimeout: number,
+  fn: () => Promise<R>
+): Promise<R> => {
+  return fn();
+};
+
 export const supabase = createClient(
   config.supabaseUrl,
   config.supabaseAnonKey,
@@ -36,6 +45,7 @@ export const supabase = createClient(
       autoRefreshToken: true,
       persistSession: true,
       detectSessionInUrl: false,
+      ...(Platform.OS === 'web' ? { lock: lockNoOp } : {}),
     },
   }
 );

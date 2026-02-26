@@ -6,14 +6,70 @@ import {
   Pressable,
   ActivityIndicator,
   Alert,
+  StyleSheet,
 } from 'react-native';
 import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import Markdown from 'react-native-markdown-display';
 import { supabase } from '@/lib/supabase';
 import { useStore } from '@/stores/useStore';
 import { awardPoints } from '@/lib/points';
 import { brand } from '@/constants/Colors';
 import type { Course, Module, Quiz, UserProgress } from '@/types/database';
+
+const markdownStyles = StyleSheet.create({
+  body: {
+    color: brand.navy,
+    fontSize: 16,
+    lineHeight: 26,
+    fontFamily: 'OpenSans_400Regular',
+  },
+  heading1: {
+    color: brand.navy,
+    fontSize: 22,
+    fontFamily: 'Montserrat_700Bold',
+    marginBottom: 8,
+    marginTop: 16,
+  },
+  heading2: {
+    color: brand.navy,
+    fontSize: 19,
+    fontFamily: 'Montserrat_700Bold',
+    marginBottom: 6,
+    marginTop: 14,
+  },
+  heading3: {
+    color: brand.navy,
+    fontSize: 17,
+    fontFamily: 'Montserrat_700Bold',
+    marginBottom: 4,
+    marginTop: 12,
+  },
+  strong: {
+    fontFamily: 'OpenSans_700Bold',
+  },
+  bullet_list_icon: {
+    color: brand.teal,
+    fontSize: 16,
+    marginRight: 8,
+  },
+  ordered_list_icon: {
+    color: brand.teal,
+    fontSize: 16,
+    marginRight: 8,
+  },
+  list_item: {
+    marginBottom: 4,
+  },
+  blockquote: {
+    backgroundColor: `${brand.teal}10`,
+    borderLeftColor: brand.teal,
+    borderLeftWidth: 3,
+    paddingLeft: 12,
+    paddingVertical: 8,
+    marginVertical: 8,
+  },
+});
 
 type ViewMode = 'overview' | 'module' | 'quiz';
 
@@ -135,7 +191,7 @@ export default function CourseDetailScreen() {
         await awardPoints(profile.id, course.points_bonus, `Completed course: ${course.title}`, 'course', courseId);
 
         // Check if this is the ambassador course
-        if (course.track === 'internal_onboarding' && course.title.toLowerCase().includes('ambassador')) {
+        if (course.is_ambassador_course) {
           Alert.alert(
             'Course Complete!',
             'You\'ve completed the Ambassador training. Ready to sign the Ambassador Agreement?',
@@ -311,9 +367,11 @@ export default function CourseDetailScreen() {
 
             {/* Content */}
             {mod.content_markdown ? (
-              <Text className="font-opensans text-ssdp-navy text-base leading-7 mb-8">
-                {mod.content_markdown}
-              </Text>
+              <View className="mb-8">
+                <Markdown style={markdownStyles}>
+                  {mod.content_markdown}
+                </Markdown>
+              </View>
             ) : (
               <View className="bg-gray-50 rounded-xl p-6 items-center mb-8">
                 <FontAwesome name="file-text-o" size={32} color={brand.gray} />

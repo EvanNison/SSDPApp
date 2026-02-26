@@ -1,0 +1,16 @@
+run = "cd ssdp-admin && npm install && npm run dev"
+entrypoint = "ssdp-admin/src/app/(dashboard)/dashboard/page.tsx"
+
+[nix]
+channel = "stable-24_05"
+
+[env]
+PATH = "/home/runner/$REPL_SLUG/ssdp-admin/node_modules/.bin:/home/runner/$REPL_SLUG/ssdp-app/node_modules/.bin:$PATH"
+
+[deployment]
+run = ["sh", "-c", "cd ssdp-admin && npm run build && npm start"]
+deploymentTarget = "cloudrun"
+
+[[ports]]
+localPort = 3000
+externalPort = 80
